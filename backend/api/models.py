@@ -61,6 +61,7 @@ class Room(models.Model):
     def __str__(self):
         return self.name
 
+
 class Reservation(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -81,3 +82,16 @@ class Reservation(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.room.name}"
+
+
+class ResortAmenity(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    icon = models.CharField(max_length=10, default='🏝️')
+    image = models.URLField(max_length=500, blank=True)
+    is_active = models.BooleanField(default=True)
+    order = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name

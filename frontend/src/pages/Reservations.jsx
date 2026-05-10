@@ -33,41 +33,37 @@ const Reservations = () => {
     }
   };
 
-  // 🔴 NEW: Check if user can cancel
   const canCancel = (status) => {
-    // User can only cancel if status is 'pending'
-    // Once admin confirms (status = 'confirmed'), user cannot cancel
     return status === 'pending';
   };
 
-  if (loading) return <div className="min-h-screen bg-gray-900 flex items-center justify-center text-amber-400">Loading...</div>;
+  if (loading) return <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900 flex items-center justify-center text-amber-400">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900 py-8">
       <div className="container mx-auto px-4">
         <h1 className="text-3xl font-bold text-white mb-8">My Reservations</h1>
         {reservations.length === 0 ? (
-          <div className="bg-gray-800/50 rounded-2xl p-12 text-center border border-amber-500/20">
+          <div className="bg-blue-900/40 rounded-2xl p-12 text-center border border-amber-500/20">
             <div className="text-6xl mb-4">📅</div>
-            <p className="text-gray-400">No reservations yet</p>
-            <Link to="/rooms" className="inline-block mt-4 bg-amber-600 text-white px-6 py-2 rounded-xl">Browse Rooms</Link>
+            <p className="text-gray-300">No reservations yet</p>
+            <Link to="/rooms" className="inline-block mt-4 bg-amber-600 text-white px-6 py-2 rounded-xl hover:bg-amber-700 transition">Browse Rooms</Link>
           </div>
         ) : (
           <div className="space-y-4">
             {reservations.map(res => (
-              <div key={res.id} className="bg-gray-800/50 rounded-2xl p-6 border border-amber-500/20">
+              <div key={res.id} className="bg-blue-900/40 rounded-2xl p-6 border border-amber-500/20">
                 <div className="flex justify-between items-start">
                   <div>
                     <h3 className="text-xl font-bold text-white">{res.room?.name}</h3>
-                    <p className="text-gray-400 mt-1">{res.room?.description}</p>
+                    <p className="text-gray-300 mt-1">{res.room?.description?.substring(0, 100)}</p>
                     <div className="flex gap-4 mt-3">
                       <span className="text-amber-400">₱{res.room?.price}/night</span>
-                      <span className="text-gray-400">👥 {res.room?.capacity} guests</span>
+                      <span className="text-gray-300">👥 {res.room?.capacity} guests</span>
                     </div>
-                    <div className="mt-3 text-gray-400">📅 {res.check_in} → {res.check_out}</div>
+                    <div className="mt-3 text-gray-300">📅 {res.check_in} → {res.check_out}</div>
                   </div>
                   <div className="text-right">
-                    {/* Status Badge */}
                     <span className={`px-3 py-1 rounded-full text-sm ${
                       res.status === 'confirmed' ? 'bg-green-500/20 text-green-400' : 
                       res.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' : 
@@ -76,7 +72,6 @@ const Reservations = () => {
                       {res.status}
                     </span>
                     
-                    {/* Cancel Button - Only show for PENDING bookings */}
                     {canCancel(res.status) && (
                       <button 
                         onClick={() => handleCancel(res.id)} 
@@ -86,12 +81,10 @@ const Reservations = () => {
                       </button>
                     )}
                     
-                    {/* Message for confirmed bookings */}
                     {res.status === 'confirmed' && (
                       <p className="text-xs text-green-400 mt-3">✓ Booking confirmed</p>
                     )}
                     
-                    {/* Message for cancelled bookings */}
                     {res.status === 'cancelled' && (
                       <p className="text-xs text-red-400 mt-3">✗ Booking cancelled</p>
                     )}

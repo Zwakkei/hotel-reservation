@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Room, Reservation
+from .models import Room, Reservation, ResortAmenity  # ← ADD ResortAmenity import
 
 
 # 🔐 REGISTER SERIALIZER
@@ -121,3 +121,10 @@ class ReservationSerializer(serializers.ModelSerializer):
         
         instance.save()
         return instance
+
+
+# 🏝️ RESORT AMENITY SERIALIZER (MOVED OUTSIDE - CORRECT INDENTATION)
+class ResortAmenitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ResortAmenity
+        fields = ['id', 'name', 'description', 'icon', 'image']

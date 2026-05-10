@@ -13,7 +13,7 @@ const RoomDetail = () => {
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [bookingError, setBookingError] = useState('');  // Separate state for booking errors
+  const [bookingError, setBookingError] = useState('');
   const [selectedImage, setSelectedImage] = useState(0);
   const [calendarDate, setCalendarDate] = useState('');
   const [bookingData, setBookingData] = useState({
@@ -47,7 +47,7 @@ const RoomDetail = () => {
   const handleCalendarDateSelect = (date) => {
     setCalendarDate(date);
     setBookingData({...bookingData, check_in: date});
-    setBookingError(''); // Clear error when date changes
+    setBookingError('');
   };
 
   const calculateNights = () => {
@@ -117,7 +117,6 @@ const RoomDetail = () => {
     } catch (err) {
       console.error('Booking error:', err);
       
-      // Handle different error types
       if (err.response?.data?.error) {
         setBookingError(err.response.data.error);
       } else if (err.response?.status === 400) {
@@ -151,29 +150,29 @@ const RoomDetail = () => {
   };
 
   const roomTypeColors = {
-    'standard': 'bg-blue-500/20 text-blue-400',
-    'deluxe': 'bg-purple-500/20 text-purple-400',
-    'premier': 'bg-amber-500/20 text-amber-400',
+    'standard': 'bg-cyan-600/20 text-cyan-400',
+    'deluxe': 'bg-indigo-600/20 text-indigo-400',
+    'premier': 'bg-amber-600/20 text-amber-400',
     'suite': 'bg-amber-600/20 text-amber-400',
-    'family': 'bg-green-500/20 text-green-400',
+    'family': 'bg-emerald-600/20 text-emerald-400',
     'presidential': 'bg-amber-700/20 text-amber-400',
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
-        <div className="text-amber-400 text-xl">Loading room details...</div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900 flex items-center justify-center">
+        <div className="text-amber-400 text-xl animate-pulse">Loading room details...</div>
       </div>
     );
   }
 
   if (error || !room) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900 flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">🏨</div>
           <h2 className="text-2xl font-bold text-white mb-2">Room Not Found</h2>
-          <p className="text-gray-400 mb-6">The room you're looking for doesn't exist.</p>
+          <p className="text-gray-300 mb-6">The room you're looking for doesn't exist.</p>
           <button onClick={() => navigate('/rooms')} className="bg-gradient-to-r from-amber-600 to-amber-700 text-white px-6 py-2 rounded-xl hover:shadow-lg transition">
             Back to Rooms
           </button>
@@ -187,7 +186,7 @@ const RoomDetail = () => {
   const total = calculateTotal();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900 py-8">
       <div className="container mx-auto px-4 max-w-6xl">
         <button onClick={() => navigate(-1)} className="text-amber-400 hover:text-amber-300 mb-6 flex items-center gap-2 transition">
           ← Back to Rooms
@@ -196,7 +195,7 @@ const RoomDetail = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Image Gallery */}
           <div>
-            <div className="bg-gray-800/50 rounded-2xl overflow-hidden border border-amber-500/20 mb-4">
+            <div className="bg-blue-900/40 rounded-2xl overflow-hidden border border-amber-500/20 mb-4">
               <img src={images[selectedImage]} alt={room.name} className="w-full h-96 object-cover" />
             </div>
             {images.length > 1 && (
@@ -214,38 +213,38 @@ const RoomDetail = () => {
           <div className="space-y-6">
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-3">
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${roomTypeColors[room.room_type] || 'bg-gray-500/20 text-gray-400'}`}>
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${roomTypeColors[room.room_type] || 'bg-cyan-600/20 text-cyan-400'}`}>
                   {room.room_type?.toUpperCase() || 'STANDARD'}
                 </span>
-                {room.size && <span className="px-3 py-1 bg-gray-700 text-gray-300 rounded-full text-sm">📏 {room.size} m²</span>}
-                {room.view_type && <span className="px-3 py-1 bg-gray-700 text-gray-300 rounded-full text-sm">👁️ {room.view_type?.toUpperCase()} View</span>}
+                {room.size && <span className="px-3 py-1 bg-blue-800/50 text-gray-200 rounded-full text-sm">📏 {room.size} m²</span>}
+                {room.view_type && <span className="px-3 py-1 bg-blue-800/50 text-gray-200 rounded-full text-sm">👁️ {room.view_type?.toUpperCase()} View</span>}
               </div>
               <h1 className="text-3xl font-bold text-white mb-2">{room.name}</h1>
               <div className="flex items-center gap-2 mb-4">
                 <div className="flex text-amber-400">★★★★★</div>
-                <span className="text-gray-400">(24 reviews)</span>
+                <span className="text-gray-300">(24 reviews)</span>
               </div>
-              <p className="text-gray-300 leading-relaxed">{room.description}</p>
+              <p className="text-gray-200 leading-relaxed">{room.description}</p>
             </div>
 
             {/* Room Features */}
-            <div className="border-t border-gray-700 pt-4">
+            <div className="border-t border-cyan-800 pt-4">
               <h3 className="text-lg font-semibold text-white mb-3">Room Features</h3>
               <div className="grid grid-cols-2 gap-4">
-                <div><div className="text-gray-400 text-sm">Bed Type</div><div className="text-white font-semibold">{room.bed_type || 'Queen Bed'}</div></div>
-                <div><div className="text-gray-400 text-sm">Max Occupancy</div><div className="text-white font-semibold">{room.capacity} guests</div></div>
-                {room.size && <div><div className="text-gray-400 text-sm">Room Size</div><div className="text-white font-semibold">{room.size} sq.m.</div></div>}
-                <div><div className="text-gray-400 text-sm">Price</div><div className="text-2xl font-bold text-amber-400">₱{room.price}</div><div className="text-gray-500 text-sm">per night</div></div>
+                <div><div className="text-amber-400 text-sm">Bed Type</div><div className="text-white font-semibold">{room.bed_type || 'Queen Bed'}</div></div>
+                <div><div className="text-amber-400 text-sm">Max Occupancy</div><div className="text-white font-semibold">{room.capacity} guests</div></div>
+                {room.size && <div><div className="text-amber-400 text-sm">Room Size</div><div className="text-white font-semibold">{room.size} sq.m.</div></div>}
+                <div><div className="text-amber-400 text-sm">Price</div><div className="text-2xl font-bold text-amber-400">₱{room.price}</div><div className="text-gray-400 text-sm">per night</div></div>
               </div>
             </div>
 
             {/* Amenities */}
             {room.amenities && room.amenities.length > 0 && (
-              <div className="border-t border-gray-700 pt-4">
+              <div className="border-t border-cyan-800 pt-4">
                 <h3 className="text-lg font-semibold text-white mb-3">Amenities</h3>
                 <div className="grid grid-cols-2 gap-2">
                   {room.amenities.map((amenity, idx) => (
-                    <div key={idx} className="flex items-center gap-2 text-gray-300 text-sm py-1">
+                    <div key={idx} className="flex items-center gap-2 text-gray-200 text-sm py-1">
                       <span className="text-amber-400">{amenityIcons[amenity] || '✓'}</span>
                       <span>{amenity}</span>
                     </div>
@@ -255,32 +254,32 @@ const RoomDetail = () => {
             )}
 
             {/* Quick Amenities Icons */}
-            <div className="border-t border-gray-700 pt-4">
+            <div className="border-t border-cyan-800 pt-4">
               <h3 className="text-lg font-semibold text-white mb-3">What's Included</h3>
               <div className="flex flex-wrap gap-3">
-                {room.has_wifi && <span className="px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300">📶 Free WiFi</span>}
-                {room.has_breakfast && <span className="px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300">🍳 Breakfast</span>}
-                {room.has_parking && <span className="px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300">🅿️ Free Parking</span>}
-                {room.has_pool && <span className="px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300">🏊 Pool Access</span>}
-                {room.has_gym && <span className="px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300">💪 Gym Access</span>}
-                {room.has_spa && <span className="px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300">🧖 Spa Access</span>}
-                {room.has_room_service && <span className="px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300">🍽️ Room Service</span>}
-                {room.has_air_conditioning && <span className="px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300">❄️ Air Conditioning</span>}
-                {room.has_tv && <span className="px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300">📺 Smart TV</span>}
-                {room.has_minibar && <span className="px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300">🍷 Mini-bar</span>}
-                {room.has_safe && <span className="px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300">🔒 In-room Safe</span>}
+                {room.has_wifi && <span className="px-3 py-1 bg-blue-800/50 rounded-full text-sm text-gray-200">📶 Free WiFi</span>}
+                {room.has_breakfast && <span className="px-3 py-1 bg-blue-800/50 rounded-full text-sm text-gray-200">🍳 Breakfast</span>}
+                {room.has_parking && <span className="px-3 py-1 bg-blue-800/50 rounded-full text-sm text-gray-200">🅿️ Free Parking</span>}
+                {room.has_pool && <span className="px-3 py-1 bg-blue-800/50 rounded-full text-sm text-gray-200">🏊 Pool Access</span>}
+                {room.has_gym && <span className="px-3 py-1 bg-blue-800/50 rounded-full text-sm text-gray-200">💪 Gym Access</span>}
+                {room.has_spa && <span className="px-3 py-1 bg-blue-800/50 rounded-full text-sm text-gray-200">🧖 Spa Access</span>}
+                {room.has_room_service && <span className="px-3 py-1 bg-blue-800/50 rounded-full text-sm text-gray-200">🍽️ Room Service</span>}
+                {room.has_air_conditioning && <span className="px-3 py-1 bg-blue-800/50 rounded-full text-sm text-gray-200">❄️ Air Conditioning</span>}
+                {room.has_tv && <span className="px-3 py-1 bg-blue-800/50 rounded-full text-sm text-gray-200">📺 Smart TV</span>}
+                {room.has_minibar && <span className="px-3 py-1 bg-blue-800/50 rounded-full text-sm text-gray-200">🍷 Mini-bar</span>}
+                {room.has_safe && <span className="px-3 py-1 bg-blue-800/50 rounded-full text-sm text-gray-200">🔒 In-room Safe</span>}
               </div>
             </div>
 
             {/* Availability Calendar */}
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20 mt-6">
+            <div className="bg-blue-900/40 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20 mt-6">
               <h2 className="text-xl font-bold text-white mb-4">Check Availability</h2>
               <AvailabilityCalendar roomId={id} onDateSelect={handleCalendarDateSelect} />
               {calendarDate && <p className="text-amber-400 mt-3 text-sm">Selected Date: {calendarDate}</p>}
             </div>
 
             {/* Booking Form */}
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20 mt-6">
+            <div className="bg-blue-900/40 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20 mt-6">
               <h2 className="text-xl font-bold text-white mb-4">Book This Room</h2>
               
               {bookingError && (
@@ -303,7 +302,7 @@ const RoomDetail = () => {
                       type="date"
                       value={bookingData.check_in}
                       onChange={(e) => setBookingData({...bookingData, check_in: e.target.value})}
-                      className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      className="w-full px-3 py-2 bg-blue-950/50 border border-cyan-800 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                       required
                       min={new Date().toISOString().split('T')[0]}
                     />
@@ -314,7 +313,7 @@ const RoomDetail = () => {
                       type="date"
                       value={bookingData.check_out}
                       onChange={(e) => setBookingData({...bookingData, check_out: e.target.value})}
-                      className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      className="w-full px-3 py-2 bg-blue-950/50 border border-cyan-800 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                       required
                       min={bookingData.check_in || new Date().toISOString().split('T')[0]}
                       disabled={!bookingData.check_in}
@@ -327,7 +326,7 @@ const RoomDetail = () => {
                   <select
                     value={bookingData.guests}
                     onChange={(e) => setBookingData({...bookingData, guests: parseInt(e.target.value)})}
-                    className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    className="w-full px-3 py-2 bg-blue-950/50 border border-cyan-800 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                   >
                     {[1, 2, 3, 4, 5, 6].map(num => (
                       <option key={num} value={num} disabled={num > room.capacity}>
@@ -344,7 +343,7 @@ const RoomDetail = () => {
                     onChange={(e) => setBookingData({...bookingData, special_requests: e.target.value})}
                     placeholder="Any special requests? (e.g., extra pillows, early check-in)"
                     rows="2"
-                    className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    className="w-full px-3 py-2 bg-blue-950/50 border border-cyan-800 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
                 

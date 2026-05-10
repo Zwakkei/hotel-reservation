@@ -69,14 +69,14 @@ const AvailabilityCalendar = ({ roomId, onDateSelect }) => {
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
-    <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20">
+    <div className="bg-blue-900/40 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20">
       <h3 className="text-lg font-semibold text-white mb-4">Availability Calendar</h3>
       
       {/* Month Navigation */}
       <div className="flex justify-between items-center mb-4">
         <button
           onClick={() => changeMonth(-1)}
-          className="px-3 py-1 bg-gray-700 rounded-lg hover:bg-gray-600 transition text-white"
+          className="px-3 py-1 bg-blue-800/50 rounded-lg hover:bg-blue-700/50 transition text-white"
         >
           ← Previous
         </button>
@@ -85,14 +85,14 @@ const AvailabilityCalendar = ({ roomId, onDateSelect }) => {
         </span>
         <button
           onClick={() => changeMonth(1)}
-          className="px-3 py-1 bg-gray-700 rounded-lg hover:bg-gray-600 transition text-white"
+          className="px-3 py-1 bg-blue-800/50 rounded-lg hover:bg-blue-700/50 transition text-white"
         >
           Next →
         </button>
       </div>
 
       {loading ? (
-        <div className="text-center py-8 text-gray-400">Loading calendar...</div>
+        <div className="text-center py-8 text-gray-300">Loading calendar...</div>
       ) : (
         <>
           {/* Week Days Header */}
@@ -146,18 +146,18 @@ const AvailabilityCalendar = ({ roomId, onDateSelect }) => {
       )}
 
       {/* Legend */}
-      <div className="mt-4 pt-4 border-t border-gray-700 flex justify-center gap-4 text-xs">
+      <div className="mt-4 pt-4 border-t border-cyan-800 flex justify-center gap-4 text-xs">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-green-500/20 rounded"></div>
-          <span className="text-gray-400">Available</span>
+          <span className="text-gray-300">Available</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-red-500/20 rounded"></div>
-          <span className="text-gray-400">Booked</span>
+          <span className="text-gray-300">Booked</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-amber-600 rounded"></div>
-          <span className="text-gray-400">Selected</span>
+          <span className="text-gray-300">Selected</span>
         </div>
       </div>
     </div>

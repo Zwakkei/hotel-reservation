@@ -30,7 +30,7 @@ const Contact = () => {
   const contactInfo = [
     { emoji: '📍', title: 'Visit Us', details: ['123 Luxury Avenue', 'Downtown District', 'New York, NY 10001'] },
     { emoji: '📞', title: 'Call Us', details: ['+1 (234) 567-8900', '+1 (234) 567-8901', 'Available 24/7'] },
-    { emoji: '✉️', title: 'Email Us', details: ['info@hotelreservation.com', 'support@hotelreservation.com', 'reservations@hotelreservation.com'] },
+    { emoji: '✉️', title: 'Email Us', details: ['info@bluehavengrand.com', 'support@bluehavengrand.com', 'reservations@bluehavengrand.com'] },
     { emoji: '🕒', title: 'Business Hours', details: ['Monday - Friday: 9AM - 9PM', 'Saturday: 10AM - 6PM', 'Sunday: 11AM - 5PM'] },
   ];
 
@@ -42,10 +42,10 @@ const Contact = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900">
       {/* Hero Section */}
       <section className="relative h-[300px] overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-amber-900/80 to-gray-900 z-10"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/20 to-transparent z-10"></div>
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1556742031-c6961e8560b0?w=1600")' }}
@@ -56,7 +56,7 @@ const Contact = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-4">Contact Us</h1>
+            <h1 className="text-5xl md:text-6xl font-bold mb-4">Contact BlueHaven Grand Hotel</h1>
             <p className="text-xl text-amber-400">We're here to help 24/7</p>
           </motion.div>
         </div>
@@ -73,12 +73,12 @@ const Contact = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg p-6 text-center hover:shadow-amber-500/10 hover:shadow-xl transition-all border border-amber-500/10"
+                className="bg-blue-900/40 backdrop-blur-sm rounded-2xl shadow-lg p-6 text-center hover:shadow-amber-500/10 hover:shadow-xl transition-all border border-amber-500/20"
               >
                 <div className="text-5xl mb-4">{info.emoji}</div>
                 <h3 className="text-xl font-bold text-white mb-3">{info.title}</h3>
                 {info.details.map((detail, i) => (
-                  <p key={i} className="text-gray-400 text-sm">{detail}</p>
+                  <p key={i} className="text-gray-300 text-sm">{detail}</p>
                 ))}
               </motion.div>
             ))}
@@ -87,7 +87,7 @@ const Contact = () => {
       </section>
 
       {/* Contact Form & Map Section */}
-      <section className="py-20 bg-gray-800/30">
+      <section className="py-20 bg-blue-950/30">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
@@ -96,10 +96,10 @@ const Contact = () => {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="bg-gray-900 rounded-2xl shadow-2xl p-8 border border-amber-500/20"
+              className="bg-blue-900/40 rounded-2xl shadow-2xl p-8 border border-amber-500/20"
             >
               <h2 className="text-3xl font-bold text-white mb-2">Send us a Message</h2>
-              <p className="text-gray-400 mb-6">We'll get back to you within 24 hours</p>
+              <p className="text-gray-300 mb-6">We'll get back to you within 24 hours</p>
 
               {submitted && (
                 <motion.div
@@ -122,7 +122,7 @@ const Contact = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-white placeholder-gray-500"
+                    className="w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-white placeholder-gray-400"
                     placeholder="John Doe"
                   />
                 </div>
@@ -137,7 +137,7 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-white placeholder-gray-500"
+                    className="w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-white placeholder-gray-400"
                     placeholder="john@example.com"
                   />
                 </div>
@@ -152,7 +152,7 @@ const Contact = () => {
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-white placeholder-gray-500"
+                    className="w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-white placeholder-gray-400"
                     placeholder="How can we help?"
                   />
                 </div>
@@ -167,7 +167,7 @@ const Contact = () => {
                     onChange={handleChange}
                     required
                     rows="5"
-                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-white placeholder-gray-500 resize-none"
+                    className="w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-white placeholder-gray-400 resize-none"
                     placeholder="Tell us more about your inquiry..."
                   ></textarea>
                 </div>
@@ -191,7 +191,7 @@ const Contact = () => {
               className="space-y-6"
             >
               {/* Map */}
-              <div className="bg-gray-900 rounded-2xl shadow-2xl overflow-hidden border border-amber-500/20">
+              <div className="bg-blue-900/40 rounded-2xl shadow-2xl overflow-hidden border border-amber-500/20">
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.1583091352!2d-74.11976397304688!3d40.69766374874431!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus"
                   width="100%"
@@ -205,12 +205,12 @@ const Contact = () => {
               </div>
 
               {/* Quick Response */}
-              <div className="bg-gradient-to-r from-amber-900 to-gray-900 rounded-2xl shadow-xl p-6 border border-amber-500/20">
+              <div className="bg-gradient-to-r from-amber-900 to-blue-900 rounded-2xl shadow-xl p-6 border border-amber-500/20">
                 <div className="flex items-center gap-3 mb-4">
                   <span className="text-3xl">🎧</span>
                   <h3 className="text-xl font-bold text-white">24/7 Customer Support</h3>
                 </div>
-                <p className="text-gray-300 mb-4">
+                <p className="text-gray-200 mb-4">
                   Our dedicated support team is available around the clock to assist you with any questions or concerns.
                 </p>
                 <div className="flex items-center gap-2 text-amber-400">
@@ -234,7 +234,7 @@ const Contact = () => {
             className="text-center mb-12"
           >
             <h2 className="text-4xl font-bold text-white mb-4">Frequently Asked Questions</h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            <p className="text-gray-300 text-lg max-w-2xl mx-auto">
               Find answers to common questions about our services
             </p>
           </motion.div>
@@ -247,10 +247,10 @@ const Contact = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-md p-6 hover:shadow-amber-500/10 hover:shadow-lg transition-all border border-amber-500/10"
+                className="bg-blue-900/40 backdrop-blur-sm rounded-xl shadow-md p-6 hover:shadow-amber-500/10 hover:shadow-lg transition-all border border-amber-500/20"
               >
                 <h3 className="font-bold text-white mb-2">{faq.q}</h3>
-                <p className="text-gray-400 text-sm">{faq.a}</p>
+                <p className="text-gray-300 text-sm">{faq.a}</p>
               </motion.div>
             ))}
           </div>
@@ -258,7 +258,7 @@ const Contact = () => {
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-20 bg-gradient-to-r from-amber-900 to-gray-900">
+      <section className="py-20 bg-gradient-to-r from-amber-900 to-blue-900">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -276,7 +276,7 @@ const Contact = () => {
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 px-6 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="flex-1 px-6 py-3 rounded-xl bg-blue-900/50 border border-cyan-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
               <button className="bg-gradient-to-r from-amber-600 to-amber-700 px-8 py-3 rounded-xl font-semibold text-white hover:shadow-lg transition">
                 Subscribe

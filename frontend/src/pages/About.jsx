@@ -66,10 +66,10 @@ const About = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900">
       {/* Hero Section */}
       <section className="relative h-[400px] overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-amber-900/80 to-gray-900 z-10"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-black/50 z-10"></div>
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1600")' }}
@@ -80,8 +80,8 @@ const About = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-4">About Us</h1>
-            <p className="text-xl text-amber-400">Redefining luxury hospitality since 2014</p>
+            <h1 className="text-5xl md:text-6xl font-bold mb-4">About BlueHaven Grand Hotel</h1>
+            <p className="text-xl text-amber-400">Luxury hospitality since 2024</p>
           </motion.div>
         </div>
       </section>
@@ -97,9 +97,9 @@ const About = () => {
               viewport={{ once: true }}
             >
               <h2 className="text-4xl font-bold text-white mb-6">Our Story</h2>
-              <div className="space-y-4 text-gray-300">
+              <div className="space-y-4 text-gray-200">
                 <p>
-                  Founded in 2014, HotelReservation began with a simple vision: to create 
+                  Founded in 2014, BlueHaven Grand Hotel began with a simple vision: to create 
                   unforgettable experiences for travelers seeking luxury and comfort. What started 
                   as a single boutique hotel has grown into a premier hospitality brand with 
                   properties worldwide.
@@ -118,15 +118,15 @@ const About = () => {
               <div className="mt-6 flex gap-4">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
-                  <span className="text-sm text-gray-400">10+ Years Experience</span>
+                  <span className="text-sm text-gray-300">10+ Years Experience</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
-                  <span className="text-sm text-gray-400">50K+ Happy Guests</span>
+                  <span className="text-sm text-gray-300">50K+ Happy Guests</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
-                  <span className="text-sm text-gray-400">25+ Industry Awards</span>
+                  <span className="text-sm text-gray-300">25+ Industry Awards</span>
                 </div>
               </div>
             </motion.div>
@@ -150,12 +150,12 @@ const About = () => {
                   className="rounded-2xl shadow-2xl w-full h-64 object-cover mt-8 border border-amber-500/20"
                 />
               </div>
-              <div className="absolute -bottom-6 -left-6 bg-gray-900 rounded-2xl shadow-2xl p-4 border border-amber-500/20">
+              <div className="absolute -bottom-6 -left-6 bg-blue-900/40 rounded-2xl shadow-2xl p-4 border border-amber-500/20">
                 <div className="flex items-center gap-2">
                   <span className="text-amber-400 text-xl">⭐</span>
                   <span className="font-bold text-white">4.9/5 Rating</span>
                 </div>
-                <p className="text-sm text-gray-400">From 10,000+ reviews</p>
+                <p className="text-sm text-gray-300">From 10,000+ reviews</p>
               </div>
             </motion.div>
           </div>
@@ -163,7 +163,7 @@ const About = () => {
       </section>
 
       {/* Stats Section */}
-      <section id="stats-section" className="py-20 bg-gradient-to-r from-amber-900 to-gray-900">
+      <section id="stats-section" className="py-20 bg-gradient-to-r from-amber-900 to-blue-900">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
@@ -197,7 +197,7 @@ const About = () => {
             className="text-center mb-12"
           >
             <h2 className="text-4xl font-bold text-white mb-4">Our Core Values</h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            <p className="text-gray-300 text-lg max-w-2xl mx-auto">
               The principles that guide everything we do
             </p>
           </motion.div>
@@ -210,11 +210,11 @@ const About = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg p-6 text-center hover:shadow-amber-500/10 hover:shadow-xl transition-all border border-amber-500/10"
+                className="bg-blue-900/40 backdrop-blur-sm rounded-2xl shadow-lg p-6 text-center hover:shadow-amber-500/10 hover:shadow-xl transition-all border border-amber-500/20"
               >
                 <div className="text-5xl mb-4">{value.emoji}</div>
                 <h3 className="text-xl font-bold text-white mb-2">{value.title}</h3>
-                <p className="text-gray-400">{value.description}</p>
+                <p className="text-gray-300">{value.description}</p>
               </motion.div>
             ))}
           </div>
@@ -222,7 +222,7 @@ const About = () => {
       </section>
 
       {/* Amenities Section */}
-      <section className="py-20 bg-gray-800/50">
+      <section className="py-20 bg-blue-950/50">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -232,7 +232,7 @@ const About = () => {
             className="text-center mb-12"
           >
             <h2 className="text-4xl font-bold text-white mb-4">World-Class Amenities</h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            <p className="text-gray-300 text-lg max-w-2xl mx-auto">
               Everything you need for a perfect stay
             </p>
           </motion.div>
@@ -245,12 +245,12 @@ const About = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: index * 0.05 }}
                 viewport={{ once: true }}
-                className="bg-gray-900 rounded-xl shadow-md p-6 flex items-start gap-4 hover:shadow-amber-500/10 hover:shadow-lg transition-all border border-amber-500/10"
+                className="bg-blue-900/40 rounded-xl shadow-md p-6 flex items-start gap-4 hover:shadow-amber-500/10 hover:shadow-lg transition-all border border-amber-500/20"
               >
                 <div className="text-3xl">{amenity.emoji}</div>
                 <div>
                   <h3 className="font-bold text-white mb-1">{amenity.name}</h3>
-                  <p className="text-sm text-gray-400">{amenity.description}</p>
+                  <p className="text-sm text-gray-300">{amenity.description}</p>
                 </div>
               </motion.div>
             ))}
@@ -266,7 +266,7 @@ const About = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="bg-gradient-to-r from-amber-900 to-gray-900 rounded-3xl p-12 text-center"
+            className="bg-gradient-to-r from-amber-900 to-blue-900 rounded-3xl p-12 text-center"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Ready to Experience Luxury?</h2>
             <p className="text-xl text-amber-300 mb-8">Book your stay with us today</p>

@@ -54,7 +54,7 @@ const AdminAnalytics = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="text-amber-400">Loading analytics...</div>
+        <div className="text-amber-400 animate-pulse">Loading analytics...</div>
       </div>
     );
   }
@@ -166,7 +166,7 @@ const AdminAnalytics = () => {
         <select
           value={days}
           onChange={(e) => setDays(parseInt(e.target.value))}
-          className="px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+          className="px-4 py-2 bg-blue-950/50 border border-cyan-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
         >
           <option value={7}>Last 7 days</option>
           <option value={30}>Last 30 days</option>
@@ -180,52 +180,52 @@ const AdminAnalytics = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gray-800/50 rounded-2xl p-4 border border-amber-500/20"
+          className="bg-blue-900/40 rounded-2xl p-4 border border-amber-500/20"
         >
           <div className="text-3xl mb-2">💰</div>
           <div className="text-2xl font-bold text-amber-400">
             ₱{stats?.revenue.total.toLocaleString()}
           </div>
-          <div className="text-gray-400 text-sm">Total Revenue</div>
+          <div className="text-gray-300 text-sm">Total Revenue</div>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-gray-800/50 rounded-2xl p-4 border border-amber-500/20"
+          className="bg-blue-900/40 rounded-2xl p-4 border border-amber-500/20"
         >
           <div className="text-3xl mb-2">📊</div>
           <div className="text-2xl font-bold text-amber-400">
             {stats?.occupancy_rate}%
           </div>
-          <div className="text-gray-400 text-sm">Occupancy Rate</div>
+          <div className="text-gray-300 text-sm">Occupancy Rate</div>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-gray-800/50 rounded-2xl p-4 border border-amber-500/20"
+          className="bg-blue-900/40 rounded-2xl p-4 border border-amber-500/20"
         >
           <div className="text-3xl mb-2">📅</div>
           <div className="text-2xl font-bold text-amber-400">
             {stats?.reservations.total}
           </div>
-          <div className="text-gray-400 text-sm">Total Bookings</div>
+          <div className="text-gray-300 text-sm">Total Bookings</div>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-gray-800/50 rounded-2xl p-4 border border-amber-500/20"
+          className="bg-blue-900/40 rounded-2xl p-4 border border-amber-500/20"
         >
           <div className="text-3xl mb-2">⭐</div>
           <div className="text-2xl font-bold text-amber-400">
             {stats?.rooms.total}
           </div>
-          <div className="text-gray-400 text-sm">Total Rooms</div>
+          <div className="text-gray-300 text-sm">Total Rooms</div>
         </motion.div>
       </div>
 
@@ -236,7 +236,7 @@ const AdminAnalytics = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2 }}
-          className="bg-gray-800/50 rounded-2xl p-6 border border-amber-500/20"
+          className="bg-blue-900/40 rounded-2xl p-6 border border-amber-500/20"
         >
           <h3 className="text-lg font-semibold text-white mb-4">Revenue Trend</h3>
           <Bar data={revenueData} options={chartOptions} />
@@ -247,7 +247,7 @@ const AdminAnalytics = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3 }}
-          className="bg-gray-800/50 rounded-2xl p-6 border border-amber-500/20"
+          className="bg-blue-900/40 rounded-2xl p-6 border border-amber-500/20"
         >
           <h3 className="text-lg font-semibold text-white mb-4">Room Status</h3>
           <div className="flex justify-center">
@@ -262,7 +262,7 @@ const AdminAnalytics = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4 }}
-          className="bg-gray-800/50 rounded-2xl p-6 border border-amber-500/20"
+          className="bg-blue-900/40 rounded-2xl p-6 border border-amber-500/20"
         >
           <h3 className="text-lg font-semibold text-white mb-4">Reservation Status</h3>
           <div className="flex justify-center">
@@ -277,7 +277,7 @@ const AdminAnalytics = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5 }}
-          className="bg-gray-800/50 rounded-2xl p-6 border border-amber-500/20"
+          className="bg-blue-900/40 rounded-2xl p-6 border border-amber-500/20"
         >
           <h3 className="text-lg font-semibold text-white mb-4">Most Popular Rooms</h3>
           <Bar data={popularRoomsData} options={chartOptions} />
@@ -289,30 +289,30 @@ const AdminAnalytics = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
-        className="bg-gray-800/50 rounded-2xl p-6 border border-amber-500/20"
+        className="bg-blue-900/40 rounded-2xl p-6 border border-amber-500/20"
       >
         <h3 className="text-lg font-semibold text-white mb-4">Quick Summary</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
-            <div className="text-gray-400 text-sm">Confirmed Bookings</div>
+            <div className="text-gray-300 text-sm">Confirmed Bookings</div>
             <div className="text-2xl font-bold text-green-400">
               {stats?.reservations.confirmed}
             </div>
           </div>
           <div>
-            <div className="text-gray-400 text-sm">Pending Approvals</div>
+            <div className="text-gray-300 text-sm">Pending Approvals</div>
             <div className="text-2xl font-bold text-yellow-400">
               {stats?.reservations.pending}
             </div>
           </div>
           <div>
-            <div className="text-gray-400 text-sm">Cancelled</div>
+            <div className="text-gray-300 text-sm">Cancelled</div>
             <div className="text-2xl font-bold text-red-400">
               {stats?.reservations.cancelled}
             </div>
           </div>
           <div>
-            <div className="text-gray-400 text-sm">Available Rooms</div>
+            <div className="text-gray-300 text-sm">Available Rooms</div>
             <div className="text-2xl font-bold text-amber-400">
               {stats?.rooms.available}
             </div>

@@ -5,8 +5,8 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Room, Reservation
-from .serializers import RegisterSerializer, UserSerializer, RoomSerializer, ReservationSerializer
+from .models import Room, Reservation, ResortAmenity
+from .serializers import RegisterSerializer, UserSerializer, RoomSerializer, ReservationSerializer, ResortAmenitySerializer
 from datetime import datetime, timedelta
 from django.db.models import Count
 from django.utils import timezone
@@ -23,7 +23,6 @@ class CustomLoginView(APIView):
         username = request.data.get('username')
         password = request.data.get('password')
         
-        # Check if both fields are provided
         if not username:
             return Response(
                 {'username': 'Username is required'},
@@ -36,7 +35,6 @@ class CustomLoginView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Check if user exists
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
@@ -45,14 +43,12 @@ class CustomLoginView(APIView):
                 status=status.HTTP_401_UNAUTHORIZED
             )
         
-        # Check password
         if not user.check_password(password):
             return Response(
                 {'password': 'Incorrect password. Please try again.'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
         
-        # Generate tokens
         refresh = RefreshToken.for_user(user)
         
         return Response({
@@ -303,3 +299,10 @@ class AdminStatsView(APIView):
             'popular_rooms': list(popular_rooms),
             'occupancy_rate': occupancy_rate
         })
+
+
+# 🏝️ RESORT AMENITIES VIEW - MOVED OUTSIDE (CORRECT INDENTATION)
+class ResortAmenityListView(generics.ListAPIView):
+    queryset = ResortAmenity.objects.filter(is_active=True)
+    serializer_class = ResortAmenitySerializer
+    permission_classes = [permissions.AllowAny]

@@ -75,13 +75,9 @@ const Login = () => {
       } else {
         localStorage.removeItem('remembered_username');
       }
-      
-      console.log('Login successful, redirecting to dashboard...');
       navigate('/dashboard');
     } else {
       console.log('Login failed:', result.error);
-      
-      // Check if error is about username or password
       const errorMsg = result.error.toLowerCase();
       if (errorMsg.includes('username') || errorMsg.includes('account')) {
         setErrors(prev => ({ ...prev, username: result.error }));
@@ -96,7 +92,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-amber-900 to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="flex-1 flex items-center justify-center relative">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-amber-600/10 rounded-full blur-3xl"></div>
@@ -106,7 +102,7 @@ const Login = () => {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="max-w-md w-full bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-amber-500/20 relative z-10"
+        className="max-w-md w-full bg-blue-900/40 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-amber-500/20 relative z-10"
       >
         <div className="text-center">
           <div className="text-6xl mb-4">🏨</div>
@@ -136,8 +132,8 @@ const Login = () => {
               type="text"
               value={formData.username}
               onChange={handleChange}
-              className={`w-full px-4 py-3 bg-gray-900 border rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white placeholder-gray-500 transition ${
-                errors.username ? 'border-red-500' : 'border-gray-700'
+              className={`w-full px-4 py-3 bg-blue-950/50 border rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white placeholder-gray-400 transition ${
+                errors.username ? 'border-red-500' : 'border-cyan-800'
               }`}
               placeholder="Enter your username"
               disabled={loading}
@@ -156,8 +152,8 @@ const Login = () => {
               type="password"
               value={formData.password}
               onChange={handleChange}
-              className={`w-full px-4 py-3 bg-gray-900 border rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white placeholder-gray-500 transition ${
-                errors.password ? 'border-red-500' : 'border-gray-700'
+              className={`w-full px-4 py-3 bg-blue-950/50 border rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white placeholder-gray-400 transition ${
+                errors.password ? 'border-red-500' : 'border-cyan-800'
               }`}
               placeholder="Enter your password"
               disabled={loading}
@@ -173,9 +169,9 @@ const Login = () => {
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="h-4 w-4 text-amber-600 rounded border-gray-600 bg-gray-800 focus:ring-amber-500"
+                className="h-4 w-4 text-amber-600 rounded border-cyan-800 bg-blue-950/50 focus:ring-amber-500"
               />
-              <span className="ml-2 text-sm text-gray-400">Remember me</span>
+              <span className="ml-2 text-sm text-gray-300">Remember me</span>
             </label>
             <a href="#" className="text-sm text-amber-400 hover:text-amber-300 transition">
               Forgot password?
@@ -197,18 +193,13 @@ const Login = () => {
             )}
           </button>
 
-          <p className="text-center text-sm text-gray-400">
+          <p className="text-center text-sm text-gray-300">
             Don't have an account?{' '}
             <Link to="/register" className="font-medium text-amber-400 hover:text-amber-300 transition">
               Create an account
             </Link>
           </p>
         </form>
-
-        <div className="mt-6 pt-4 border-t border-gray-700 text-center">
-          <p className="text-xs text-gray-500 mb-2">Demo credentials:</p>
-          <p className="text-xs text-amber-400">Username: testing / Password: Testuser123</p>
-        </div>
       </motion.div>
     </div>
   );

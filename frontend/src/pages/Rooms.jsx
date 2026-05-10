@@ -93,20 +93,20 @@ const Rooms = () => {
   };
 
   const roomTypeColors = {
-    'standard': 'bg-blue-500/20 text-blue-400',
-    'deluxe': 'bg-purple-500/20 text-purple-400',
-    'premier': 'bg-amber-500/20 text-amber-400',
+    'standard': 'bg-cyan-600/20 text-cyan-400',
+    'deluxe': 'bg-indigo-600/20 text-indigo-400',
+    'premier': 'bg-amber-600/20 text-amber-400',
     'suite': 'bg-amber-600/20 text-amber-400',
-    'family': 'bg-green-500/20 text-green-400',
+    'family': 'bg-emerald-600/20 text-emerald-400',
     'presidential': 'bg-amber-700/20 text-amber-400',
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="relative mb-8 rounded-2xl overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-amber-900/80 to-gray-900"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-900 via-cyan-900/80 to-blue-900"></div>
           <div className="relative z-10 py-12 px-8">
             <h1 className="text-4xl font-bold text-white mb-2">Our Rooms</h1>
             <p className="text-amber-400">Find your perfect accommodation</p>
@@ -128,7 +128,7 @@ const Rooms = () => {
         </div>
 
         {/* Filter Bar */}
-        <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg p-4 mb-8 border border-amber-500/20">
+        <div className="bg-blue-900/40 backdrop-blur-sm rounded-2xl p-4 mb-8 border border-amber-500/20 shadow-lg hover:shadow-2xl hover:shadow-amber-500/10 transition">
           <div className="flex flex-wrap gap-4 items-center justify-between">
             <div className="flex gap-4 flex-wrap">
               <div>
@@ -139,7 +139,7 @@ const Rooms = () => {
                   value={filters.check_in}
                   onChange={handleFilterChange}
                   min={new Date().toISOString().split('T')[0]}
-                  className="px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white"
+                  className="px-4 py-2 bg-blue-950/50 border border-cyan-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white"
                 />
               </div>
               <div>
@@ -151,7 +151,7 @@ const Rooms = () => {
                   onChange={handleFilterChange}
                   min={filters.check_in || new Date().toISOString().split('T')[0]}
                   disabled={!filters.check_in}
-                  className={`px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white ${!filters.check_in ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`px-4 py-2 bg-blue-950/50 border border-cyan-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white ${!filters.check_in ? 'opacity-50 cursor-not-allowed' : ''}`}
                 />
               </div>
               <div>
@@ -160,7 +160,7 @@ const Rooms = () => {
                   name="capacity"
                   value={filters.capacity}
                   onChange={handleFilterChange}
-                  className="px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white"
+                  className="px-4 py-2 bg-blue-950/50 border border-cyan-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white"
                 >
                   <option value="">All</option>
                   <option value="1">1 Guest</option>
@@ -186,7 +186,7 @@ const Rooms = () => {
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl transition ${
                   showFilters 
                     ? 'bg-amber-600 text-white' 
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                    : 'bg-blue-800/50 text-gray-300 hover:bg-blue-700/50'
                 }`}
               >
                 ⚙️ Filters
@@ -201,7 +201,7 @@ const Rooms = () => {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                className="mt-4 pt-4 border-t border-gray-700"
+                className="mt-4 pt-4 border-t border-cyan-800"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
@@ -211,7 +211,7 @@ const Rooms = () => {
                       name="minPrice"
                       value={filters.minPrice}
                       onChange={handleFilterChange}
-                      className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white"
+                      className="w-full px-4 py-2 bg-blue-950/50 border border-cyan-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white"
                       placeholder="Min"
                       min="0"
                     />
@@ -223,7 +223,7 @@ const Rooms = () => {
                       name="maxPrice"
                       value={filters.maxPrice}
                       onChange={handleFilterChange}
-                      className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white"
+                      className="w-full px-4 py-2 bg-blue-950/50 border border-cyan-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white"
                       placeholder="Max"
                       min="0"
                     />
@@ -245,7 +245,7 @@ const Rooms = () => {
 
         {/* Results Count */}
         <div className="mb-6 flex justify-between items-center">
-          <p className="text-gray-400">
+          <p className="text-gray-300">
             Found <span className="font-semibold text-amber-400">{filteredRooms.length}</span> rooms
           </p>
           <button
@@ -260,18 +260,18 @@ const Rooms = () => {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} className="bg-gray-800 rounded-2xl h-96 animate-pulse border border-gray-700"></div>
+              <div key={i} className="bg-blue-900/40 rounded-2xl h-96 animate-pulse border border-cyan-800"></div>
             ))}
           </div>
         ) : filteredRooms.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="text-center py-20 bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-amber-500/20"
+            className="text-center py-20 bg-blue-900/40 backdrop-blur-sm rounded-2xl border border-amber-500/20"
           >
             <div className="text-6xl mb-4">🏨</div>
             <h3 className="text-xl font-semibold text-white mb-2">No rooms match your criteria</h3>
-            <p className="text-gray-400 mb-6">Try adjusting your filters or dates</p>
+            <p className="text-gray-300 mb-6">Try adjusting your filters or dates</p>
             <button
               onClick={clearFilters}
               className="bg-gradient-to-r from-amber-600 to-amber-700 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition"
@@ -287,18 +287,18 @@ const Rooms = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="group bg-gray-800/50 backdrop-blur-sm rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300 border border-amber-500/10"
+                className="group bg-blue-900/40 backdrop-blur-sm rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300 border border-amber-500/20"
               >
                 {/* Room Image */}
                 <div className="relative h-56 overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent z-10"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-blue-900 via-transparent to-transparent z-10"></div>
                   <div 
                     className="w-full h-full bg-cover bg-center group-hover:scale-110 transition duration-500"
                     style={{ backgroundImage: `url(${room.main_image || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=400&fit=crop'})` }}
                   ></div>
                   
                   {/* Room Type Badge */}
-                  <div className={`absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-semibold z-20 ${roomTypeColors[room.room_type] || 'bg-gray-500/20 text-gray-400'}`}>
+                  <div className={`absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-semibold z-20 ${roomTypeColors[room.room_type] || 'bg-cyan-600/20 text-cyan-400'}`}>
                     {room.room_type?.toUpperCase() || 'STANDARD'}
                   </div>
                   
@@ -325,24 +325,24 @@ const Rooms = () => {
                   <h3 className="text-xl font-bold text-white mb-2 group-hover:text-amber-400 transition line-clamp-1">
                     {room.name}
                   </h3>
-                  <p className="text-gray-400 mb-3 line-clamp-2 text-sm">
+                  <p className="text-gray-300 mb-3 line-clamp-2 text-sm">
                     {room.description}
                   </p>
                   
                   {/* Rating */}
                   <div className="flex items-center gap-2 mb-3">
                     <div className="flex text-amber-400 text-sm">★★★★★</div>
-                    <span className="text-xs text-gray-500">(128 reviews)</span>
+                    <span className="text-xs text-gray-400">(128 reviews)</span>
                   </div>
                   
                   {/* Key Amenities */}
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {room.has_wifi && <span className="text-xs bg-gray-700 px-2 py-1 rounded-full text-gray-300">📶 WiFi</span>}
-                    {room.has_breakfast && <span className="text-xs bg-gray-700 px-2 py-1 rounded-full text-gray-300">🍳 Breakfast</span>}
-                    {room.has_parking && <span className="text-xs bg-gray-700 px-2 py-1 rounded-full text-gray-300">🅿️ Parking</span>}
-                    {room.has_pool && <span className="text-xs bg-gray-700 px-2 py-1 rounded-full text-gray-300">🏊 Pool</span>}
+                    {room.has_wifi && <span className="text-xs bg-cyan-800/50 px-2 py-1 rounded-full text-gray-200">📶 WiFi</span>}
+                    {room.has_breakfast && <span className="text-xs bg-cyan-800/50 px-2 py-1 rounded-full text-gray-200">🍳 Breakfast</span>}
+                    {room.has_parking && <span className="text-xs bg-cyan-800/50 px-2 py-1 rounded-full text-gray-200">🅿️ Parking</span>}
+                    {room.has_pool && <span className="text-xs bg-cyan-800/50 px-2 py-1 rounded-full text-gray-200">🏊 Pool</span>}
                     {!room.has_wifi && !room.has_breakfast && !room.has_parking && (
-                      <span className="text-xs text-gray-500">Standard amenities included</span>
+                      <span className="text-xs text-gray-400">Standard amenities included</span>
                     )}
                   </div>
                   

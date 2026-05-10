@@ -20,17 +20,17 @@ const Feedback = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900 py-8">
       <div className="container mx-auto px-4 max-w-2xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-amber-500/20"
+          className="bg-blue-900/40 backdrop-blur-sm rounded-2xl p-8 border border-amber-500/20"
         >
           <div className="text-center mb-8">
             <div className="text-6xl mb-4">💬</div>
             <h1 className="text-3xl font-bold text-white">Give Feedback</h1>
-            <p className="text-gray-400 mt-2">We value your opinion! Help us improve.</p>
+            <p className="text-gray-300 mt-2">We value your opinion! Help us improve.</p>
           </div>
 
           {submitted && (
@@ -69,7 +69,7 @@ const Feedback = () => {
                 value={feedback.title}
                 onChange={(e) => setFeedback({...feedback, title: e.target.value})}
                 placeholder="Brief summary of your feedback"
-                className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 required
               />
             </div>
@@ -83,7 +83,7 @@ const Feedback = () => {
                 onChange={(e) => setFeedback({...feedback, message: e.target.value})}
                 placeholder="Tell us about your experience..."
                 rows="5"
-                className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 required
               />
             </div>

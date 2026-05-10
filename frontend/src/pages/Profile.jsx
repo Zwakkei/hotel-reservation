@@ -99,7 +99,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900 py-8">
       <div className="container mx-auto px-4 max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -107,17 +107,17 @@ const Profile = () => {
           className="mb-8"
         >
           <h1 className="text-3xl font-bold text-white">Account Settings</h1>
-          <p className="text-gray-400 mt-1">Manage your profile and account preferences</p>
+          <p className="text-gray-300 mt-1">Manage your profile and account preferences</p>
         </motion.div>
 
         {/* Tab Navigation */}
-        <div className="flex gap-2 mb-8 border-b border-gray-700 pb-4">
+        <div className="flex gap-2 mb-8 border-b border-cyan-800 pb-4">
           <button
             onClick={() => setActiveTab('profile')}
             className={`px-6 py-2 rounded-xl transition ${
               activeTab === 'profile' 
                 ? 'bg-amber-600 text-white' 
-                : 'text-gray-400 hover:text-white'
+                : 'text-gray-300 hover:text-white'
             }`}
           >
             👤 Profile Information
@@ -127,7 +127,7 @@ const Profile = () => {
             className={`px-6 py-2 rounded-xl transition ${
               activeTab === 'security' 
                 ? 'bg-amber-600 text-white' 
-                : 'text-gray-400 hover:text-white'
+                : 'text-gray-300 hover:text-white'
             }`}
           >
             🔒 Security
@@ -154,7 +154,7 @@ const Profile = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20"
+            className="bg-blue-900/40 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20"
           >
             <form onSubmit={updateProfile}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -167,7 +167,7 @@ const Profile = () => {
                     name="username"
                     value={profileData.username}
                     onChange={handleProfileChange}
-                    className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    className="w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                     required
                   />
                 </div>
@@ -181,7 +181,7 @@ const Profile = () => {
                     name="email"
                     value={profileData.email}
                     onChange={handleProfileChange}
-                    className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    className="w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                     required
                   />
                 </div>
@@ -195,7 +195,7 @@ const Profile = () => {
                     name="first_name"
                     value={profileData.first_name}
                     onChange={handleProfileChange}
-                    className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    className="w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
                 
@@ -208,7 +208,7 @@ const Profile = () => {
                     name="last_name"
                     value={profileData.last_name}
                     onChange={handleProfileChange}
-                    className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    className="w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
@@ -231,7 +231,7 @@ const Profile = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20"
+            className="bg-blue-900/40 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20"
           >
             <form onSubmit={changePassword}>
               <div className="space-y-6">
@@ -244,7 +244,7 @@ const Profile = () => {
                     name="current_password"
                     value={passwordData.current_password}
                     onChange={handlePasswordChange}
-                    className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    className="w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                     required
                   />
                 </div>
@@ -258,10 +258,10 @@ const Profile = () => {
                     name="new_password"
                     value={passwordData.new_password}
                     onChange={handlePasswordChange}
-                    className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    className="w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                     required
                   />
-                  <p className="text-xs text-gray-500 mt-1">Minimum 8 characters</p>
+                  <p className="text-xs text-gray-400 mt-1">Minimum 8 characters</p>
                 </div>
                 
                 <div>
@@ -273,7 +273,7 @@ const Profile = () => {
                     name="confirm_password"
                     value={passwordData.confirm_password}
                     onChange={handlePasswordChange}
-                    className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    className="w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                     required
                   />
                 </div>

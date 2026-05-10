@@ -12,7 +12,7 @@ class APIDocumentationView(APIView):
     
     def get(self, request):
         return Response({
-            'api_name': 'Hotel Reservation System',
+            'api_name': 'BlueHaven Grand Hotel Reservation',
             'version': '1.0.0',
             'status': 'running',
             'endpoints': {

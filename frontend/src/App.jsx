@@ -22,6 +22,7 @@ import Help from './pages/Help';
 import Feedback from './pages/Feedback';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import ResortAmenities from './pages/ResortAmenities';
 
 // User Protected Route
 const ProtectedRoute = ({ children }) => {
@@ -32,7 +33,7 @@ const ProtectedRoute = ({ children }) => {
   
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900 flex justify-center items-center">
         <div className="loader"></div>
       </div>
     );
@@ -44,7 +45,6 @@ const ProtectedRoute = ({ children }) => {
 const AdminRoute = ({ children }) => {
   const adminToken = localStorage.getItem('admin_token');
   
-  // If no admin token, redirect to admin login
   if (!adminToken) {
     return <Navigate to="/admin-login" />;
   }
@@ -58,7 +58,6 @@ function AppContent() {
   
   return (
     <>
-      {/* Only show Navbar for non-admin routes */}
       {!isAdminRoute && <Navbar />}
       
       <main className={`flex-grow ${!isAdminRoute ? 'container mx-auto px-4 py-8' : ''}`}>
@@ -72,6 +71,7 @@ function AppContent() {
             <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
             <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
             <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
+            <Route path="/amenities" element={<PageTransition><ResortAmenities /></PageTransition>} />
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <PageTransition><Dashboard /></PageTransition>
@@ -111,7 +111,6 @@ function AppContent() {
         </AnimatePresence>
       </main>
       
-      {/* Only show Footer for non-admin routes */}
       {!isAdminRoute && <Footer />}
     </>
   );
@@ -124,7 +123,7 @@ function App() {
         <ToastContainer />
         <ScrollToTop />
         <BackToTop />
-        <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900">
           <AppContent />
         </div>
       </AuthProvider>

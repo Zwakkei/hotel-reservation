@@ -71,11 +71,11 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900">
       {/* Hero Section */}
       <section className="relative h-screen min-h-[600px] flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40 z-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/20 to-transparent z-10"></div>
           <div 
             className="absolute inset-0 bg-cover bg-center scale-110"
             style={{ 
@@ -101,7 +101,7 @@ const Home = () => {
               transition={{ duration: 0.6 }}
             >
               <div className="inline-flex items-center gap-2 bg-amber-500/20 backdrop-blur-sm px-4 py-2 rounded-full text-amber-400 text-sm mb-6">
-                <span>⭐</span> Award-Winning Hospitality Since 2024
+                <span>⭐</span> BlueHaven Grand Hotel - Since 2024
               </div>
             </motion.div>
 
@@ -111,9 +111,9 @@ const Home = () => {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight"
             >
-              Where Luxury
+              Welcome to
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-400">
-                {" "}Meets Comfort
+                {" "}BlueHaven Grand Hotel
               </span>
             </motion.h1>
 
@@ -121,7 +121,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-xl text-gray-300 mb-8 max-w-2xl"
+              className="text-xl text-gray-200 mb-8 max-w-2xl"
             >
               Experience unparalleled hospitality in our carefully curated rooms. 
               Book your perfect stay with just a few clicks.
@@ -152,12 +152,12 @@ const Home = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="mt-12 flex flex-wrap gap-6 text-gray-300 text-sm"
+              className="mt-12 flex flex-wrap gap-6 text-gray-200 text-sm"
             >
               <div className="flex items-center gap-2 text-amber-400">⭐ 4.9/5 Rating</div>
-              <div className="flex items-center gap-2 text-gray-300">📶 Free WiFi</div>
-              <div className="flex items-center gap-2 text-gray-300">🍳 Free Breakfast</div>
-              <div className="flex items-center gap-2 text-gray-300">🚗 Free Parking</div>
+              <div className="flex items-center gap-2 text-gray-200">📶 Free WiFi</div>
+              <div className="flex items-center gap-2 text-gray-200">🍳 Free Breakfast</div>
+              <div className="flex items-center gap-2 text-gray-200">🚗 Free Parking</div>
             </motion.div>
           </div>
         </div>
@@ -173,14 +173,14 @@ const Home = () => {
         </motion.div>
       </section>
 
-      {/* Booking Widget - BLACK & GOLD */}
+      {/* Booking Widget - Navy + Gold */}
       <section className="relative z-30 -mt-20">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-2xl p-6 max-w-5xl mx-auto border border-amber-500/20"
+            className="bg-blue-900/40 backdrop-blur-sm rounded-2xl shadow-2xl p-6 max-w-5xl mx-auto border border-amber-500/20"
           >
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
@@ -190,7 +190,7 @@ const Home = () => {
                   value={checkIn}
                   onChange={(e) => setCheckIn(e.target.value)}
                   min={new Date().toISOString().split('T')[0]}
-                  className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white"
+                  className="w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white"
                 />
               </div>
               <div>
@@ -201,7 +201,7 @@ const Home = () => {
                   onChange={(e) => setCheckOut(e.target.value)}
                   min={checkIn || new Date().toISOString().split('T')[0]}
                   disabled={!checkIn}
-                  className={`w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white ${!checkIn ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white ${!checkIn ? 'opacity-50 cursor-not-allowed' : ''}`}
                 />
               </div>
               <div>
@@ -209,7 +209,7 @@ const Home = () => {
                 <select
                   value={guests}
                   onChange={(e) => setGuests(parseInt(e.target.value))}
-                  className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white"
+                  className="w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white"
                 >
                   {[1, 2, 3, 4, 5, 6].map(num => (
                     <option key={num} value={num}>{num} Guest{num > 1 ? 's' : ''}</option>
@@ -226,7 +226,7 @@ const Home = () => {
                 </button>
               </div>
             </div>
-            <div className="mt-4 pt-4 border-t border-gray-700 flex justify-center gap-6 text-xs">
+            <div className="mt-4 pt-4 border-t border-cyan-800 flex justify-center gap-6 text-xs">
               <span className="text-amber-400 flex items-center gap-1">✓ Best Price Guarantee</span>
               <span className="text-amber-400 flex items-center gap-1">✓ Free Cancellation</span>
               <span className="text-amber-400 flex items-center gap-1">✓ No Booking Fees</span>
@@ -235,13 +235,13 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Why Choose Us - BLACK & GOLD */}
+      {/* Why Choose Us - Navy + Gold */}
       <section className="py-20">
         <div className="container mx-auto px-4">
           <Section>
             <div className="text-center mb-12">
               <h2 className="text-4xl font-bold text-white mb-4">Why Choose Us</h2>
-              <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+              <p className="text-gray-300 text-lg max-w-2xl mx-auto">
                 Experience the difference with our award-winning hospitality
               </p>
             </div>
@@ -250,12 +250,12 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
               <Section key={index} delay={index * 0.1}>
-                <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg p-6 text-center hover:shadow-xl hover:shadow-amber-500/10 transition-all duration-300 hover:-translate-y-2 border border-amber-500/20">
+                <div className="bg-blue-900/40 backdrop-blur-sm rounded-2xl shadow-lg p-6 text-center hover:shadow-xl hover:shadow-amber-500/10 transition-all duration-300 hover:-translate-y-2 border border-amber-500/20">
                   <div className="text-5xl mb-4 inline-block text-white w-20 h-20 rounded-2xl flex items-center justify-center mx-auto">
                     {feature.emoji}
                   </div>
                   <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
-                  <p className="text-gray-400">{feature.description}</p>
+                  <p className="text-gray-300">{feature.description}</p>
                 </div>
               </Section>
             ))}
@@ -263,35 +263,35 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Featured Rooms - BLACK & GOLD */}
-      <section className="py-20 bg-gray-800/30">
+      {/* Featured Rooms - Navy + Gold */}
+      <section className="py-20 bg-blue-950/50">
         <div className="container mx-auto px-4">
           <Section>
             <div className="text-center mb-12">
               <h2 className="text-4xl font-bold text-white mb-4">Featured Rooms</h2>
-              <p className="text-gray-400 text-lg">Our most popular accommodations</p>
+              <p className="text-gray-300 text-lg">Our most popular accommodations</p>
             </div>
           </Section>
           
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[1, 2, 3].map(i => (
-                <div key={i} className="bg-gray-800 rounded-2xl h-96 animate-pulse"></div>
+                <div key={i} className="bg-blue-900/40 rounded-2xl h-96 animate-pulse"></div>
               ))}
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {featuredRooms.map((room, index) => (
                 <Section key={room.id} delay={index * 0.1}>
-                  <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300 group border border-amber-500/20">
+                  <div className="bg-blue-900/40 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300 group border border-amber-500/20">
                     <div className="relative h-64 overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent z-10"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-blue-900 via-transparent to-transparent z-10"></div>
                       <div 
                         className="w-full h-full bg-cover bg-center group-hover:scale-110 transition duration-500"
-                        style={{ backgroundImage: `url(https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=400&fit=crop&random=${room.id})` }}
+                        style={{ backgroundImage: `url(${room.main_image || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=400&fit=crop'})` }}
                       ></div>
                       <div className="absolute top-4 right-4 bg-gradient-to-r from-amber-600 to-amber-700 px-3 py-1 rounded-full text-sm font-bold text-white z-20 shadow-lg">
-                        ${room.price}/night
+                        ₱{room.price}/night
                       </div>
                       <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full text-white text-sm z-20">
                         👥 {room.capacity} guests
@@ -301,10 +301,10 @@ const Home = () => {
                       <h3 className="text-xl font-bold text-white mb-2 group-hover:text-amber-400 transition">
                         {room.name}
                       </h3>
-                      <p className="text-gray-400 mb-4 line-clamp-2">{room.description}</p>
+                      <p className="text-gray-300 mb-4 line-clamp-2">{room.description}</p>
                       <div className="flex items-center gap-2 mb-4">
                         <div className="flex text-amber-400">★★★★★</div>
-                        <span className="text-sm text-gray-500">(128 reviews)</span>
+                        <span className="text-sm text-gray-400">(128 reviews)</span>
                       </div>
                       <Link
                         to={`/rooms/${room.id}`}
@@ -327,8 +327,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Testimonials Section - BLACK & GOLD */}
-      <section className="py-20 bg-gradient-to-r from-amber-900 to-gray-900">
+      {/* Testimonials Section - Navy + Gold */}
+      <section className="py-20 bg-gradient-to-r from-amber-900 to-blue-900">
         <div className="container mx-auto px-4">
           <Section>
             <div className="text-center text-white mb-12">
@@ -353,11 +353,11 @@ const Home = () => {
         </div>
       </section>
 
-      {/* CTA Section - BLACK & GOLD */}
+      {/* CTA Section - Navy + Gold */}
       <section className="py-20">
         <div className="container mx-auto px-4">
           <Section>
-            <div className="bg-gradient-to-r from-amber-900 to-gray-900 rounded-3xl p-12 text-center border border-amber-500/20">
+            <div className="bg-gradient-to-r from-amber-900 to-blue-900 rounded-3xl p-12 text-center border border-amber-500/20">
               <h2 className="text-4xl font-bold text-white mb-4">Ready for an Unforgettable Experience?</h2>
               <p className="text-xl text-amber-300 mb-8">Book your stay today and create lasting memories</p>
               <div className="flex flex-wrap gap-4 justify-center">
@@ -373,18 +373,18 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Newsletter Section - BLACK & GOLD */}
-      <section className="py-20 bg-gray-900">
+      {/* Newsletter Section - Navy + Gold */}
+      <section className="py-20 bg-blue-950">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <div className="text-5xl mb-4">📧</div>
             <h2 className="text-3xl font-bold text-white mb-4">Stay Updated</h2>
-            <p className="text-gray-400 mb-8">Subscribe to get exclusive offers and updates</p>
+            <p className="text-gray-300 mb-8">Subscribe to get exclusive offers and updates</p>
             <div className="flex flex-col sm:flex-row gap-4">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 px-6 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="flex-1 px-6 py-3 rounded-xl bg-blue-900/50 border border-cyan-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
               <button className="bg-gradient-to-r from-amber-600 to-amber-700 px-8 py-3 rounded-xl font-semibold text-white hover:shadow-lg hover:shadow-amber-500/20 transition">
                 Subscribe

@@ -74,53 +74,55 @@ const Register = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+  e.preventDefault();
+  if (!validateForm()) return;
+  
+  setLoading(true);
+  setError('');
+  
+  try {
+    const response = await fetch('http://localhost:8000/api/register/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        password2: formData.confirmPassword,
+      }),
+    });
     
-    setLoading(true);
-    setError('');
+    const data = await response.json();
     
-    try {
-      const response = await fetch('http://localhost:8000/api/register/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: formData.username,
-          email: formData.email,
-          password: formData.password,
-          password2: formData.confirmPassword,  // ← THIS IS THE FIX!
-        }),
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok) {
-        navigate('/login', { state: { message: 'Registration successful! Please login.' } });
+    if (response.ok) {
+      navigate('/login', { state: { message: 'Registration successful! Please login.' } });
+    } else {
+      // 🔴 IMPROVED ERROR HANDLING - Show specific error messages
+      if (data.email) {
+        setError(data.email[0]);  // "Email already exists"
+      } else if (data.username) {
+        setError(data.username[0]);  // "Username already exists"
+      } else if (data.password) {
+        setError(data.password[0]);
+      } else if (data.non_field_errors) {
+        setError(data.non_field_errors[0]);
+      } else if (typeof data === 'string') {
+        setError(data);
       } else {
-        // Handle error response
-        if (data.password) {
-          setError(data.password[0]);
-        } else if (data.username) {
-          setError(data.username[0]);
-        } else if (data.email) {
-          setError(data.email[0]);
-        } else if (typeof data === 'string') {
-          setError(data);
-        } else {
-          setError('Registration failed. Please try again.');
-        }
+        setError('Registration failed. Please try again.');
       }
-    } catch (error) {
-      console.error('Network error:', error);
-      setError('Cannot connect to server. Make sure Django backend is running on port 8000');
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (error) {
+    console.error('Network error:', error);
+    setError('Cannot connect to server. Make sure Django backend is running on port 8000');
+  } finally {
+    setLoading(false);
+  }
+};
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-amber-900 to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="flex-1 flex items-center justify-center relative">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-amber-600/10 rounded-full blur-3xl"></div>
@@ -130,7 +132,7 @@ const Register = () => {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="max-w-md w-full bg-gray-900/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-amber-500/20 relative z-10"
+        className="max-w-md w-full bg-blue-900/40 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-amber-500/20 relative z-10"
       >
         <div className="text-center">
           <div className="text-6xl mb-4">🏨</div>
@@ -160,7 +162,7 @@ const Register = () => {
               required
               value={formData.username}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white placeholder-gray-500"
+              className="w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white placeholder-gray-400"
               placeholder="Choose a username"
               disabled={loading}
             />
@@ -174,7 +176,7 @@ const Register = () => {
               required
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white placeholder-gray-500"
+              className="w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white placeholder-gray-400"
               placeholder="Enter your email"
               disabled={loading}
             />
@@ -189,7 +191,7 @@ const Register = () => {
                 required
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white placeholder-gray-500"
+                className="w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white placeholder-gray-400"
                 placeholder="Create a password"
                 disabled={loading}
               />
@@ -206,13 +208,13 @@ const Register = () => {
           {formData.password && (
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
-                <span className="text-gray-400">Password Strength:</span>
+                <span className="text-gray-300">Password Strength:</span>
                 <span className={`font-semibold ${
                   getPasswordStrengthText() === 'Strong' ? 'text-amber-400' : 
                   getPasswordStrengthText() === 'Medium' ? 'text-yellow-400' : 'text-red-400'
                 }`}>{getPasswordStrengthText()}</span>
               </div>
-              <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+              <div className="h-2 bg-blue-800/50 rounded-full overflow-hidden">
                 <div 
                   className={`h-full ${getPasswordStrengthColor()} transition-all duration-300`}
                   style={{ width: `${(Object.values(passwordStrength).filter(Boolean).length / 4) * 100}%` }}
@@ -244,7 +246,7 @@ const Register = () => {
                 required
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white placeholder-gray-500"
+                className="w-full px-4 py-3 bg-blue-950/50 border border-cyan-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-white placeholder-gray-400"
                 placeholder="Confirm your password"
                 disabled={loading}
               />
@@ -263,9 +265,9 @@ const Register = () => {
               type="checkbox"
               checked={acceptedTerms}
               onChange={(e) => setAcceptedTerms(e.target.checked)}
-              className="h-4 w-4 text-amber-600 rounded border-gray-600 bg-gray-800 focus:ring-amber-500"
+              className="h-4 w-4 text-amber-600 rounded border-cyan-800 bg-blue-950/50 focus:ring-amber-500"
             />
-            <span className="ml-2 text-sm text-gray-400">
+            <span className="ml-2 text-sm text-gray-300">
               I agree to the <a href="#" className="text-amber-400 hover:text-amber-300">Terms and Conditions</a>
             </span>
           </label>
@@ -278,7 +280,7 @@ const Register = () => {
             {loading ? 'Creating account...' : 'Create Account'}
           </button>
 
-          <p className="text-center text-sm text-gray-400">
+          <p className="text-center text-sm text-gray-300">
             Already have an account?{' '}
             <Link to="/login" className="font-medium text-amber-400 hover:text-amber-300 transition">
               Sign in here

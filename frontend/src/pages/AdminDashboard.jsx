@@ -15,7 +15,9 @@ const AdminDashboard = () => {
     pendingReservations: 0,
     confirmedReservations: 0,
     cancelledReservations: 0,
+    totalRevenue: 0,
   });
+  const [adminUser, setAdminUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -35,6 +37,10 @@ const AdminDashboard = () => {
     if (!adminToken) {
       navigate('/admin-login');
       return;
+    }
+    const user = localStorage.getItem('admin_user');
+    if (user) {
+      setAdminUser(JSON.parse(user));
     }
     fetchData();
   }, [navigate]);
@@ -58,6 +64,9 @@ const AdminDashboard = () => {
       setRooms(roomsData);
       setReservations(reservationsData);
       
+      const confirmedReservations = reservationsData.filter(r => r.status === 'confirmed');
+      const totalRevenue = confirmedReservations.reduce((sum, r) => sum + (parseFloat(r.total_price) || 0), 0);
+      
       setStats({
         totalRooms: roomsData.length,
         availableRooms: roomsData.filter(r => r.is_available).length,
@@ -65,11 +74,13 @@ const AdminDashboard = () => {
         pendingReservations: reservationsData.filter(r => r.status === 'pending').length,
         confirmedReservations: reservationsData.filter(r => r.status === 'confirmed').length,
         cancelledReservations: reservationsData.filter(r => r.status === 'cancelled').length,
+        totalRevenue: totalRevenue,
       });
     } catch (error) {
       console.error('Failed to fetch data:', error);
       if (error.response?.status === 401) {
         localStorage.removeItem('admin_token');
+        localStorage.removeItem('admin_user');
         navigate('/admin-login');
       }
     } finally {
@@ -83,35 +94,8 @@ const AdminDashboard = () => {
     navigate('/admin-login');
   };
 
-  const updateReservationStatus = async (reservationId, newStatus) => {
-    const adminToken = getAdminToken();
-    try {
-      await axios.patch(
-        `http://localhost:8000/api/reservations/${reservationId}/`,
-        { status: newStatus },
-        { headers: { 'Authorization': `Bearer ${adminToken}` } }
-      );
-      fetchData();
-      alert(`Reservation ${newStatus}!`);
-    } catch (error) {
-      console.error('Failed to update status:', error);
-      alert('Failed to update reservation status');
-    }
-  };
-
-  const deleteReservation = async (reservationId) => {
-    if (window.confirm('Are you sure you want to delete this reservation?')) {
-      const adminToken = getAdminToken();
-      try {
-        await axios.delete(`http://localhost:8000/api/reservations/${reservationId}/`, {
-          headers: { 'Authorization': `Bearer ${adminToken}` }
-        });
-        fetchData();
-        alert('Reservation deleted!');
-      } catch (error) {
-        alert('Failed to delete reservation');
-      }
-    }
+  const handleRefresh = () => {
+    fetchData();
   };
 
   const handleAddRoom = async (e) => {
@@ -160,528 +144,508 @@ const AdminDashboard = () => {
     }
   };
 
+  const updateReservationStatus = async (reservationId, newStatus) => {
+    const adminToken = getAdminToken();
+    try {
+      await axios.patch(
+        `http://localhost:8000/api/reservations/${reservationId}/`,
+        { status: newStatus },
+        { headers: { 'Authorization': `Bearer ${adminToken}` } }
+      );
+      fetchData();
+      alert(`Reservation ${newStatus}!`);
+    } catch (error) {
+      alert('Failed to update reservation status');
+    }
+  };
+
+  const deleteReservation = async (reservationId) => {
+    if (window.confirm('Are you sure you want to delete this reservation?')) {
+      const adminToken = getAdminToken();
+      try {
+        await axios.delete(`http://localhost:8000/api/reservations/${reservationId}/`, {
+          headers: { 'Authorization': `Bearer ${adminToken}` }
+        });
+        fetchData();
+        alert('Reservation deleted!');
+      } catch (error) {
+        alert('Failed to delete reservation');
+      }
+    }
+  };
+
   const getStatusColor = (status) => {
     switch (status) {
-      case 'confirmed': return 'bg-green-500/20 text-green-400 border-green-500/30';
-      case 'pending': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-      case 'cancelled': return 'bg-red-500/20 text-red-400 border-red-500/30';
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+      case 'confirmed': return 'bg-green-500/20 text-green-400';
+      case 'pending': return 'bg-yellow-500/20 text-yellow-400';
+      case 'cancelled': return 'bg-red-500/20 text-red-400';
+      default: return 'bg-gray-500/20 text-gray-400';
     }
   };
 
   const statCards = [
     { title: 'Total Rooms', value: stats.totalRooms, icon: '🏨' },
-    { title: 'Available Rooms', value: stats.availableRooms, icon: '✅' },
-    { title: 'Total Reservations', value: stats.totalReservations, icon: '📅' },
-    { title: 'Pending', value: stats.pendingReservations, icon: '⏳' },
-    { title: 'Confirmed', value: stats.confirmedReservations, icon: '✓' },
-    { title: 'Cancelled', value: stats.cancelledReservations, icon: '✗' },
+    { title: 'Pending Request', value: stats.pendingReservations, icon: '⏳' },
+    { title: 'Pending Payments', value: stats.pendingReservations, icon: '💰' },
+    { title: 'Total Revenue', value: `₱${stats.totalRevenue.toLocaleString()}`, icon: '💵' },
   ];
 
-  // Loading spinner with animation
+  const tabs = [
+    { id: 'dashboard', name: 'Dashboard', icon: '📊' },
+    { id: 'rooms', name: 'Rooms', icon: '🏨' },
+    { id: 'reservations', name: 'Reservations', icon: '📅' },
+    { id: 'analytics', name: 'Analytics', icon: '📈' },
+    { id: 'system', name: 'System Admin', icon: '⚙️' },
+  ];
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center"
-        >
-          <div className="relative w-20 h-20 mx-auto mb-4">
-            <div className="absolute inset-0 border-4 border-amber-500/20 rounded-full"></div>
-            <div className="absolute inset-0 border-4 border-t-amber-500 rounded-full animate-spin"></div>
-          </div>
-          <p className="text-amber-400 text-lg animate-pulse">Loading Admin Dashboard...</p>
-        </motion.div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900 flex items-center justify-center">
+        <div className="text-amber-400 text-xl animate-pulse">Loading Admin Dashboard...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      {/* Admin Navbar */}
-      <motion.nav 
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="bg-gray-800/50 backdrop-blur-sm border-b border-amber-500/20 sticky top-0 z-50"
-      >
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">👑</span>
-              <span className="text-xl font-bold bg-gradient-to-r from-amber-400 to-yellow-400 bg-clip-text text-transparent">
-                Admin Panel
-              </span>
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900">
+      <div className="flex">
+        {/* Sidebar */}
+        <div className="w-72 min-h-screen bg-blue-900/40 backdrop-blur-sm border-r border-amber-500/20">
+          <div className="p-6">
+            <div className="flex items-center gap-3 mb-8">
+              <span className="text-3xl">👑</span>
+              <div>
+                <h1 className="text-xl font-bold text-white">Admin Dashboard</h1>
+                <p className="text-xs text-amber-400">BlueHaven Grand Hotel</p>
+              </div>
             </div>
-            <div className="flex gap-2">
-              {['dashboard', 'rooms', 'reservations', 'analytics'].map((tab) => (
-                <motion.button
-                  key={tab}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-5 py-2 rounded-xl transition-all duration-300 flex items-center gap-2 ${
-                    activeTab === tab 
-                      ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-lg shadow-amber-500/20' 
-                      : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+            
+            {/* Admin User Info */}
+            <div className="bg-blue-800/30 rounded-2xl p-4 mb-6 border border-amber-500/20">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full flex items-center justify-center text-xl font-bold text-white">
+                  {adminUser?.username?.charAt(0).toUpperCase() || 'A'}
+                </div>
+                <div>
+                  <p className="text-white font-semibold">{adminUser?.username || 'Administrator'}</p>
+                  <p className="text-gray-400 text-sm">{adminUser?.email || 'admin@bluehavengrand.com'}</p>
+                </div>
+              </div>
+              <div className="text-xs text-gray-400">
+                Role: <span className="text-amber-400">Super Administrator</span>
+              </div>
+            </div>
+
+            {/* Navigation Tabs */}
+            <div className="space-y-2">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                    activeTab === tab.id
+                      ? 'bg-amber-600 text-white shadow-lg'
+                      : 'text-gray-300 hover:bg-blue-800/50 hover:text-white'
                   }`}
                 >
-                  {tab === 'dashboard' && '📊'}
-                  {tab === 'rooms' && '🏨'}
-                  {tab === 'reservations' && '📅'}
-                  {tab === 'analytics' && '📈'}
-                  <span className="capitalize">{tab}</span>
-                </motion.button>
+                  <span className="text-xl">{tab.icon}</span>
+                  <span>{tab.name}</span>
+                </button>
               ))}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleLogout}
-                className="px-5 py-2 rounded-xl bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-all duration-300 flex items-center gap-2 border border-red-500/20"
-              >
-                🚪 Logout
-              </motion.button>
             </div>
+
+            {/* Logout Button */}
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/20 transition-all duration-200 mt-6"
+            >
+              <span className="text-xl">🚪</span>
+              <span>Logout</span>
+            </button>
           </div>
         </div>
-      </motion.nav>
 
-      <div className="container mx-auto px-6 py-8">
-        {/* Dashboard Tab */}
-        {activeTab === 'dashboard' && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            {/* Welcome Banner */}
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="bg-gradient-to-r from-amber-900/50 to-gray-900/50 rounded-2xl p-6 mb-8 border border-amber-500/20"
-            >
-              <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-              <p className="text-gray-400">Welcome back, Administrator! Here's what's happening today.</p>
-            </motion.div>
-
-            {/* Stats Cards with animation */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              {statCards.map((stat, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  whileHover={{ y: -5, scale: 1.02 }}
-                  className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20 hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="text-4xl">{stat.icon}</div>
-                    <div className="text-2xl font-bold text-amber-400">{stat.value}</div>
-                  </div>
-                  <h3 className="text-gray-400 mt-2">{stat.title}</h3>
-                </motion.div>
-              ))}
+        {/* Main Content */}
+        <div className="flex-1 p-8">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-white">Dashboard</h1>
+              <p className="text-gray-300 mt-1">Welcome back, {adminUser?.username || 'Administrator'}</p>
             </div>
-
-            {/* Recent Reservations Table */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20"
+            <button
+              onClick={handleRefresh}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-800/50 rounded-xl text-gray-300 hover:text-white transition"
             >
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-white">Recent Reservations</h2>
-                <span className="text-xs text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full">
-                  Last 5 entries
-                </span>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-gray-700">
-                      <th className="text-left py-3 text-amber-400">Guest</th>
-                      <th className="text-left py-3 text-amber-400">Room</th>
-                      <th className="text-left py-3 text-amber-400">Dates</th>
-                      <th className="text-left py-3 text-amber-400">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <AnimatePresence>
-                      {reservations.slice(0, 5).map((res, idx) => (
-                        <motion.tr 
-                          key={res.id} 
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: idx * 0.05 }}
-                          className="border-b border-gray-800 hover:bg-gray-700/30 transition"
-                        >
-                          <td className="py-3 text-gray-300">{res.user?.username || 'N/A'}</td>
-                          <td className="py-3 text-gray-300">{res.room?.name || 'N/A'}</td>
-                          <td className="py-3 text-gray-300">{res.check_in} → {res.check_out}</td>
-                          <td className="py-3">
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(res.status)}`}>
-                              {res.status}
-                            </span>
-                          </td>
-                        </motion.tr>
-                      ))}
-                    </AnimatePresence>
-                    {reservations.length === 0 && (
-                      <tr>
-                        <td colSpan="4" className="text-center py-8 text-gray-500">No reservations yet</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
+              🔄 Refresh Data
+            </button>
+          </div>
 
-        {/* Rooms Tab */}
-        {activeTab === 'rooms' && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h2 className="text-2xl font-bold text-white">Room Management</h2>
-                <p className="text-gray-400 text-sm">Add, edit, or remove hotel rooms</p>
-              </div>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setShowAddModal(true)}
-                className="bg-gradient-to-r from-amber-600 to-amber-700 text-white px-5 py-2 rounded-xl hover:shadow-lg transition"
-              >
-                + Add New Room
-              </motion.button>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4">
-              <AnimatePresence>
-                {rooms.map((room, idx) => (
+          {/* ========== DASHBOARD TAB (ONLY STATS & DASHBOARD CONTENT HERE) ========== */}
+          {activeTab === 'dashboard' && (
+            <>
+              {/* Statistics Cards - ONLY ON DASHBOARD */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                {statCards.map((stat, index) => (
                   <motion.div
-                    key={room.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.05 }}
-                    className="bg-gray-800/50 rounded-2xl p-5 border border-amber-500/20 hover:shadow-lg transition"
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-blue-900/40 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20 hover:shadow-xl transition"
                   >
-                    <div className="flex justify-between items-center">
-                      <div className="flex-1">
-                        <h3 className="text-lg font-bold text-white">{room.name}</h3>
-                        <p className="text-gray-400 text-sm mt-1">{room.description?.substring(0, 100)}</p>
-                        <div className="flex gap-4 mt-2">
-                          <span className="text-amber-400 font-semibold">₱{room.price}/night</span>
-                          <span className="text-gray-400">👥 {room.capacity} guests</span>
-                          <span className={room.is_available ? 'text-green-400' : 'text-red-400'}>
-                            {room.is_available ? '✓ Available' : '✗ Unavailable'}
+                    <div className="flex items-center justify-between">
+                      <div className="text-4xl">{stat.icon}</div>
+                      <div className="text-2xl font-bold text-amber-400">{stat.value}</div>
+                    </div>
+                    <div className="text-gray-300 mt-2">{stat.title}</div>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Dashboard Grid Content */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Recent Reservations */}
+                <div className="bg-blue-900/40 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20">
+                  <h2 className="text-xl font-bold text-white mb-4">Recent Reservations</h2>
+                  <div className="space-y-3">
+                    {reservations.slice(0, 5).map((res) => (
+                      <div key={res.id} className="flex justify-between items-center p-3 bg-blue-800/30 rounded-xl">
+                        <div>
+                          <p className="text-white font-medium">{res.room?.name}</p>
+                          <p className="text-gray-400 text-sm">{res.user?.username}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm text-gray-300">{res.check_in} → {res.check_out}</p>
+                          <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(res.status)}`}>
+                            {res.status}
                           </span>
                         </div>
                       </div>
-                      <div className="flex gap-2">
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => setEditingRoom(room)}
-                          className="px-4 py-2 bg-blue-600/20 text-blue-400 rounded-xl hover:bg-blue-600/30 transition border border-blue-500/20"
-                        >
-                          ✏️ Edit
-                        </motion.button>
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => handleDeleteRoom(room.id)}
-                          className="px-4 py-2 bg-red-600/20 text-red-400 rounded-xl hover:bg-red-600/30 transition border border-red-500/20"
-                        >
-                          🗑️ Delete
-                        </motion.button>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-              {rooms.length === 0 && (
-                <div className="text-center py-12 bg-gray-800/30 rounded-2xl border border-amber-500/10">
-                  <div className="text-6xl mb-4">🏨</div>
-                  <p className="text-gray-400">No rooms yet. Click "Add New Room" to get started!</p>
+                    ))}
+                    {reservations.length === 0 && (
+                      <p className="text-gray-400 text-center py-8">No reservations yet</p>
+                    )}
+                  </div>
                 </div>
-              )}
-            </div>
-          </motion.div>
-        )}
 
-        {/* Reservations Tab */}
-        {activeTab === 'reservations' && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-white">All Reservations</h2>
-              <p className="text-gray-400 text-sm">Manage guest bookings (Confirm, Cancel, Delete)</p>
+                {/* Quick Actions */}
+                <div className="bg-blue-900/40 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20">
+                  <h2 className="text-xl font-bold text-white mb-4">Quick Actions</h2>
+                  <div className="space-y-3">
+                    <button className="w-full bg-blue-800/50 text-white py-3 rounded-xl hover:bg-blue-700/50 transition text-left px-4">
+                      📊 View Request Statistics
+                    </button>
+                    <button className="w-full bg-blue-800/50 text-white py-3 rounded-xl hover:bg-blue-700/50 transition text-left px-4">
+                      🏨 Manage Rooms
+                    </button>
+                    <button className="w-full bg-blue-800/50 text-white py-3 rounded-xl hover:bg-blue-700/50 transition text-left px-4">
+                      📅 View All Reservations
+                    </button>
+                  </div>
+                </div>
+
+                {/* User Info */}
+                <div className="bg-blue-900/40 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20">
+                  <h2 className="text-xl font-bold text-white mb-4">User Information</h2>
+                  <div className="space-y-3">
+                    <div className="flex justify-between p-3 bg-blue-800/30 rounded-xl">
+                      <span className="text-gray-300">User Name</span>
+                      <span className="text-white font-medium">{adminUser?.username || 'N/A'}</span>
+                    </div>
+                    <div className="flex justify-between p-3 bg-blue-800/30 rounded-xl">
+                      <span className="text-gray-300">Email</span>
+                      <span className="text-white font-medium">{adminUser?.email || 'N/A'}</span>
+                    </div>
+                    <div className="flex justify-between p-3 bg-blue-800/30 rounded-xl">
+                      <span className="text-gray-300">Role</span>
+                      <span className="text-amber-400 font-medium">Administrator</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Notifications */}
+                <div className="bg-blue-900/40 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20">
+                  <h2 className="text-xl font-bold text-white mb-4">Notifications</h2>
+                  <div className="space-y-3">
+                    {stats.pendingReservations > 0 && (
+                      <div className="flex items-center gap-3 p-3 bg-yellow-500/10 rounded-xl border border-yellow-500/20">
+                        <span className="text-2xl">📋</span>
+                        <div>
+                          <p className="text-white font-medium">{stats.pendingReservations} Pending Reservations</p>
+                          <p className="text-gray-400 text-sm">Need your attention</p>
+                        </div>
+                      </div>
+                    )}
+                    {stats.availableRooms > 0 && (
+                      <div className="flex items-center gap-3 p-3 bg-green-500/10 rounded-xl border border-green-500/20">
+                        <span className="text-2xl">🏨</span>
+                        <div>
+                          <p className="text-white font-medium">{stats.availableRooms} Rooms Available</p>
+                          <p className="text-gray-400 text-sm">Ready for booking</p>
+                        </div>
+                      </div>
+                    )}
+                    {stats.pendingReservations === 0 && stats.availableRooms === 0 && (
+                      <p className="text-gray-400 text-center py-4">No new notifications</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* ========== ROOMS TAB ========== */}
+          {activeTab === 'rooms' && (
+            <div className="bg-blue-900/40 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-white">Room Management</h2>
+                <button
+                  onClick={() => setShowAddModal(true)}
+                  className="bg-amber-600 text-white px-4 py-2 rounded-xl hover:bg-amber-700 transition"
+                >
+                  + Add New Room
+                </button>
+              </div>
+              <div className="grid grid-cols-1 gap-4">
+                {rooms.map((room) => (
+                  <div key={room.id} className="bg-blue-800/30 rounded-xl p-4 flex justify-between items-center">
+                    <div>
+                      <h3 className="text-white font-semibold">{room.name}</h3>
+                      <p className="text-gray-400 text-sm">₱{room.price}/night | 👥 {room.capacity} guests</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setEditingRoom(room)}
+                        className="px-3 py-1 bg-blue-600/50 text-white rounded-lg hover:bg-blue-600 transition"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteRoom(room.id)}
+                        className="px-3 py-1 bg-red-600/50 text-white rounded-lg hover:bg-red-600 transition"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20">
+          )}
+
+          {/* ========== RESERVATIONS TAB ========== */}
+          {activeTab === 'reservations' && (
+            <div className="bg-blue-900/40 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20">
+              <h2 className="text-2xl font-bold text-white mb-6">All Reservations</h2>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-700">
-                      <th className="text-left py-3 text-amber-400">ID</th>
+                    <tr className="border-b border-cyan-800">
                       <th className="text-left py-3 text-amber-400">Guest</th>
                       <th className="text-left py-3 text-amber-400">Room</th>
-                      <th className="text-left py-3 text-amber-400">Check In</th>
-                      <th className="text-left py-3 text-amber-400">Check Out</th>
+                      <th className="text-left py-3 text-amber-400">Dates</th>
                       <th className="text-left py-3 text-amber-400">Status</th>
                       <th className="text-left py-3 text-amber-400">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <AnimatePresence>
-                      {reservations.map((res, idx) => (
-                        <motion.tr 
-                          key={res.id} 
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: idx * 0.03 }}
-                          className="border-b border-gray-800 hover:bg-gray-700/30 transition"
-                        >
-                          <td className="py-3 text-white font-mono">#{res.id}</td>
-                          <td className="py-3 text-gray-300">{res.user?.username || 'N/A'}</td>
-                          <td className="py-3 text-gray-300">{res.room?.name || 'N/A'}</td>
-                          <td className="py-3 text-gray-300">{res.check_in}</td>
-                          <td className="py-3 text-gray-300">{res.check_out}</td>
-                          <td className="py-3">
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(res.status)}`}>
-                              {res.status}
-                            </span>
-                          </td>
-                          <td className="py-3">
-                            <div className="flex gap-2">
-                              {res.status === 'pending' && (
-                                <motion.button
-                                  whileHover={{ scale: 1.05 }}
-                                  whileTap={{ scale: 0.95 }}
-                                  onClick={() => updateReservationStatus(res.id, 'confirmed')}
-                                  className="px-3 py-1 bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600/30 transition text-xs border border-green-500/20"
-                                >
-                                  ✓ Confirm
-                                </motion.button>
-                              )}
-                              {(res.status === 'pending' || res.status === 'confirmed') && (
-                                <motion.button
-                                  whileHover={{ scale: 1.05 }}
-                                  whileTap={{ scale: 0.95 }}
-                                  onClick={() => updateReservationStatus(res.id, 'cancelled')}
-                                  className="px-3 py-1 bg-yellow-600/20 text-yellow-400 rounded-lg hover:bg-yellow-600/30 transition text-xs border border-yellow-500/20"
-                                >
-                                  ✗ Cancel
-                                </motion.button>
-                              )}
-                              <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() => deleteReservation(res.id)}
-                                className="px-3 py-1 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30 transition text-xs border border-red-500/20"
+                    {reservations.map((res) => (
+                      <tr key={res.id} className="border-b border-cyan-800/50">
+                        <td className="py-3 text-gray-300">{res.user?.username}</td>
+                        <td className="py-3 text-gray-300">{res.room?.name}</td>
+                        <td className="py-3 text-gray-300">{res.check_in} → {res.check_out}</td>
+                        <td className="py-3">
+                          <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(res.status)}`}>
+                            {res.status}
+                          </span>
+                        </td>
+                        <td className="py-3">
+                          <div className="flex gap-2">
+                            {res.status === 'pending' && (
+                              <button
+                                onClick={() => updateReservationStatus(res.id, 'confirmed')}
+                                className="px-2 py-1 bg-green-600/20 text-green-400 rounded-lg text-xs"
                               >
-                                🗑️ Delete
-                              </motion.button>
-                            </div>
-                          </td>
-                        </motion.tr>
-                      ))}
-                    </AnimatePresence>
-                    {reservations.length === 0 && (
-                      <tr>
-                        <td colSpan="7" className="text-center py-12 text-gray-500">
-                          <div className="text-6xl mb-4">📅</div>
-                          <p>No reservations yet</p>
+                                Confirm
+                              </button>
+                            )}
+                            <button
+                              onClick={() => deleteReservation(res.id)}
+                              className="px-2 py-1 bg-red-600/20 text-red-400 rounded-lg text-xs"
+                            >
+                              Delete
+                            </button>
+                          </div>
                         </td>
                       </tr>
-                    )}
+                    ))}
                   </tbody>
                 </table>
               </div>
             </div>
-          </motion.div>
-        )}
+          )}
 
-        {/* Analytics Tab */}
-        {activeTab === 'analytics' && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <AdminAnalytics />
-          </motion.div>
-        )}
+          {/* ========== ANALYTICS TAB ========== */}
+          {activeTab === 'analytics' && (
+            <div className="bg-blue-900/40 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20">
+              <AdminAnalytics />
+            </div>
+          )}
+
+          {/* ========== SYSTEM ADMIN TAB ========== */}
+          {activeTab === 'system' && (
+            <div className="bg-blue-900/40 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20">
+              <h2 className="text-2xl font-bold text-white mb-6">System Settings</h2>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center p-4 bg-blue-800/30 rounded-xl">
+                  <div>
+                    <p className="text-white font-medium">Maintenance Mode</p>
+                    <p className="text-gray-400 text-sm">Enable/disable system maintenance</p>
+                  </div>
+                  <button className="px-4 py-2 bg-gray-600 rounded-lg text-white">Disabled</button>
+                </div>
+                <div className="flex justify-between items-center p-4 bg-blue-800/30 rounded-xl">
+                  <div>
+                    <p className="text-white font-medium">Backup Database</p>
+                    <p className="text-gray-400 text-sm">Create a backup of the system data</p>
+                  </div>
+                  <button className="px-4 py-2 bg-amber-600 rounded-lg text-white">Backup Now</button>
+                </div>
+                <div className="flex justify-between items-center p-4 bg-blue-800/30 rounded-xl">
+                  <div>
+                    <p className="text-white font-medium">System Logs</p>
+                    <p className="text-gray-400 text-sm">View system activity logs</p>
+                  </div>
+                  <button className="px-4 py-2 bg-blue-600 rounded-lg text-white">View Logs</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Add Room Modal with animation */}
-      <AnimatePresence>
-        {showAddModal && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-gray-800 rounded-2xl p-6 max-w-md w-full border border-amber-500/20"
-            >
-              <h2 className="text-2xl font-bold text-white mb-4">Add New Room</h2>
-              <form onSubmit={handleAddRoom}>
-                <div className="space-y-4">
+      {/* Add Room Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-2xl p-6 max-w-md w-full border border-amber-500/20">
+            <h2 className="text-2xl font-bold text-white mb-4">Add New Room</h2>
+            <form onSubmit={handleAddRoom}>
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  placeholder="Room Name"
+                  value={newRoom.name}
+                  onChange={(e) => setNewRoom({...newRoom, name: e.target.value})}
+                  className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-white"
+                  required
+                />
+                <textarea
+                  placeholder="Description"
+                  value={newRoom.description}
+                  onChange={(e) => setNewRoom({...newRoom, description: e.target.value})}
+                  className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-white"
+                  rows="3"
+                  required
+                />
+                <input
+                  type="number"
+                  placeholder="Price per night"
+                  value={newRoom.price}
+                  onChange={(e) => setNewRoom({...newRoom, price: e.target.value})}
+                  className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-white"
+                  required
+                />
+                <input
+                  type="number"
+                  placeholder="Capacity"
+                  value={newRoom.capacity}
+                  onChange={(e) => setNewRoom({...newRoom, capacity: e.target.value})}
+                  className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-white"
+                  required
+                />
+                <label className="flex items-center gap-2 text-white">
                   <input
-                    type="text"
-                    placeholder="Room Name"
-                    value={newRoom.name}
-                    onChange={(e) => setNewRoom({...newRoom, name: e.target.value})}
-                    className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-white"
-                    required
+                    type="checkbox"
+                    checked={newRoom.is_available}
+                    onChange={(e) => setNewRoom({...newRoom, is_available: e.target.checked})}
                   />
-                  <textarea
-                    placeholder="Description"
-                    value={newRoom.description}
-                    onChange={(e) => setNewRoom({...newRoom, description: e.target.value})}
-                    className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-white"
-                    rows="3"
-                    required
-                  />
-                  <input
-                    type="number"
-                    placeholder="Price per night"
-                    value={newRoom.price}
-                    onChange={(e) => setNewRoom({...newRoom, price: e.target.value})}
-                    className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-white"
-                    required
-                  />
-                  <input
-                    type="number"
-                    placeholder="Capacity"
-                    value={newRoom.capacity}
-                    onChange={(e) => setNewRoom({...newRoom, capacity: e.target.value})}
-                    className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-white"
-                    required
-                  />
-                  <label className="flex items-center gap-2 text-white">
-                    <input
-                      type="checkbox"
-                      checked={newRoom.is_available}
-                      onChange={(e) => setNewRoom({...newRoom, is_available: e.target.checked})}
-                    />
-                    Available for booking
-                  </label>
-                </div>
-                <div className="flex gap-3 mt-6">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="submit"
-                    className="flex-1 bg-amber-600 text-white py-2 rounded-xl hover:bg-amber-700"
-                  >
-                    Add Room
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="button"
-                    onClick={() => setShowAddModal(false)}
-                    className="flex-1 bg-gray-700 text-white py-2 rounded-xl hover:bg-gray-600"
-                  >
-                    Cancel
-                  </motion.button>
-                </div>
-              </form>
-            </motion.div>
+                  Available for booking
+                </label>
+              </div>
+              <div className="flex gap-3 mt-6">
+                <button type="submit" className="flex-1 bg-amber-600 text-white py-2 rounded-xl hover:bg-amber-700">
+                  Add Room
+                </button>
+                <button type="button" onClick={() => setShowAddModal(false)} className="flex-1 bg-gray-700 text-white py-2 rounded-xl hover:bg-gray-600">
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
 
       {/* Edit Room Modal */}
-      <AnimatePresence>
-        {editingRoom && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-gray-800 rounded-2xl p-6 max-w-md w-full border border-amber-500/20"
-            >
-              <h2 className="text-2xl font-bold text-white mb-4">Edit Room</h2>
-              <form onSubmit={handleUpdateRoom}>
-                <div className="space-y-4">
+      {editingRoom && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-2xl p-6 max-w-md w-full border border-amber-500/20">
+            <h2 className="text-2xl font-bold text-white mb-4">Edit Room</h2>
+            <form onSubmit={handleUpdateRoom}>
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  placeholder="Room Name"
+                  value={editingRoom.name}
+                  onChange={(e) => setEditingRoom({...editingRoom, name: e.target.value})}
+                  className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-white"
+                  required
+                />
+                <textarea
+                  placeholder="Description"
+                  value={editingRoom.description}
+                  onChange={(e) => setEditingRoom({...editingRoom, description: e.target.value})}
+                  className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-white"
+                  rows="3"
+                  required
+                />
+                <input
+                  type="number"
+                  placeholder="Price per night"
+                  value={editingRoom.price}
+                  onChange={(e) => setEditingRoom({...editingRoom, price: e.target.value})}
+                  className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-white"
+                  required
+                />
+                <input
+                  type="number"
+                  placeholder="Capacity"
+                  value={editingRoom.capacity}
+                  onChange={(e) => setEditingRoom({...editingRoom, capacity: e.target.value})}
+                  className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-white"
+                  required
+                />
+                <label className="flex items-center gap-2 text-white">
                   <input
-                    type="text"
-                    placeholder="Room Name"
-                    value={editingRoom.name}
-                    onChange={(e) => setEditingRoom({...editingRoom, name: e.target.value})}
-                    className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-white"
-                    required
+                    type="checkbox"
+                    checked={editingRoom.is_available}
+                    onChange={(e) => setEditingRoom({...editingRoom, is_available: e.target.checked})}
                   />
-                  <textarea
-                    placeholder="Description"
-                    value={editingRoom.description}
-                    onChange={(e) => setEditingRoom({...editingRoom, description: e.target.value})}
-                    className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-white"
-                    rows="3"
-                    required
-                  />
-                  <input
-                    type="number"
-                    placeholder="Price per night"
-                    value={editingRoom.price}
-                    onChange={(e) => setEditingRoom({...editingRoom, price: e.target.value})}
-                    className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-white"
-                    required
-                  />
-                  <input
-                    type="number"
-                    placeholder="Capacity"
-                    value={editingRoom.capacity}
-                    onChange={(e) => setEditingRoom({...editingRoom, capacity: e.target.value})}
-                    className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-white"
-                    required
-                  />
-                  <label className="flex items-center gap-2 text-white">
-                    <input
-                      type="checkbox"
-                      checked={editingRoom.is_available}
-                      onChange={(e) => setEditingRoom({...editingRoom, is_available: e.target.checked})}
-                    />
-                    Available for booking
-                  </label>
-                </div>
-                <div className="flex gap-3 mt-6">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="submit"
-                    className="flex-1 bg-amber-600 text-white py-2 rounded-xl hover:bg-amber-700"
-                  >
-                    Update Room
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="button"
-                    onClick={() => setEditingRoom(null)}
-                    className="flex-1 bg-gray-700 text-white py-2 rounded-xl hover:bg-gray-600"
-                  >
-                    Cancel
-                  </motion.button>
-                </div>
-              </form>
-            </motion.div>
+                  Available for booking
+                </label>
+              </div>
+              <div className="flex gap-3 mt-6">
+                <button type="submit" className="flex-1 bg-amber-600 text-white py-2 rounded-xl hover:bg-amber-700">
+                  Update Room
+                </button>
+                <button type="button" onClick={() => setEditingRoom(null)} className="flex-1 bg-gray-700 text-white py-2 rounded-xl hover:bg-gray-600">
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
     </div>
   );
 };
