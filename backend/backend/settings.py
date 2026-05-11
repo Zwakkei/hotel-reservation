@@ -10,7 +10,10 @@ SECRET_KEY = 'django-insecure-your-secret-key-here-change-this-in-production'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'bluehaven-api-kzum.onrender.com', 
+    '.onrender.com'
+]
 
 # Application definition
 INSTALLED_APPS = [
