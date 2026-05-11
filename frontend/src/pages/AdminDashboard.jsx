@@ -28,6 +28,8 @@ const AdminDashboard = () => {
     price: '',
     capacity: '',
     is_available: true,
+    imageFile: null,      
+    imagePreview: null
   });
 
   const getAdminToken = () => localStorage.getItem('admin_token');
@@ -99,20 +101,46 @@ const AdminDashboard = () => {
   };
 
   const handleAddRoom = async (e) => {
-    e.preventDefault();
-    const adminToken = getAdminToken();
-    try {
-      await axios.post('http://localhost:8000/api/rooms/', newRoom, {
-        headers: { 'Authorization': `Bearer ${adminToken}` }
-      });
-      setShowAddModal(false);
-      setNewRoom({ name: '', description: '', price: '', capacity: '', is_available: true });
-      fetchData();
-      alert('Room added successfully!');
-    } catch (error) {
-      alert('Failed to add room');
-    }
-  };
+  e.preventDefault();
+  const adminToken = getAdminToken();
+  
+  // 1. Create a FormData object (Standard JSON cannot carry files)
+  const formData = new FormData();
+  formData.append('name', newRoom.name);
+  formData.append('description', newRoom.description);
+  formData.append('price', newRoom.price);
+  formData.append('capacity', newRoom.capacity);
+  formData.append('is_available', newRoom.is_available);
+  
+  // 2. Append the file if it exists
+  if (newRoom.imageFile) {
+    formData.append('main_image_file', newRoom.imageFile);
+  }
+
+  try {
+    setLoading(true);
+    await axios.post('http://localhost:8000/api/rooms/', formData, {
+      headers: { 
+        'Authorization': `Bearer ${adminToken}`,
+        'Content-Type': 'multipart/form-data' // Required for files
+      }
+    });
+    
+    // 3. Reset state and refresh
+    setShowAddModal(false);
+    setNewRoom({ 
+      name: '', description: '', price: '', capacity: '', 
+      is_available: true, imageFile: null, imagePreview: null 
+    });
+    fetchData(); // or fetchRooms();
+    alert('✅ Room added successfully!');
+  } catch (error) {
+    console.error('Error:', error);
+    alert('❌ Failed to add room');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleUpdateRoom = async (e) => {
     e.preventDefault();
@@ -396,43 +424,53 @@ const AdminDashboard = () => {
           )}
 
           {/* ========== ROOMS TAB ========== */}
-          {activeTab === 'rooms' && (
-            <div className="bg-blue-900/40 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-white">Room Management</h2>
-                <button
-                  onClick={() => setShowAddModal(true)}
-                  className="bg-amber-600 text-white px-4 py-2 rounded-xl hover:bg-amber-700 transition"
-                >
-                  + Add New Room
-                </button>
-              </div>
-              <div className="grid grid-cols-1 gap-4">
-                {rooms.map((room) => (
-                  <div key={room.id} className="bg-blue-800/30 rounded-xl p-4 flex justify-between items-center">
-                    <div>
-                      <h3 className="text-white font-semibold">{room.name}</h3>
-                      <p className="text-gray-400 text-sm">₱{room.price}/night | 👥 {room.capacity} guests</p>
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => setEditingRoom(room)}
-                        className="px-3 py-1 bg-blue-600/50 text-white rounded-lg hover:bg-blue-600 transition"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeleteRoom(room.id)}
-                        className="px-3 py-1 bg-red-600/50 text-white rounded-lg hover:bg-red-600 transition"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+{activeTab === 'rooms' && (
+  <div className="bg-blue-900/40 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20">
+    <div className="flex justify-between items-center mb-6">
+      <h2 className="text-2xl font-bold text-white">Room Management</h2>
+      <button
+        onClick={() => setShowAddModal(true)}
+        className="bg-amber-600 text-white px-4 py-2 rounded-xl hover:bg-amber-700 transition"
+      >
+        + Add New Room
+      </button>
+    </div>
+    <div className="grid grid-cols-1 gap-4">
+      {rooms.map((room) => (
+        <div key={room.id} className="bg-blue-800/30 rounded-xl p-4 flex items-center gap-4">
+          
+          {/* --- ROOM IMAGE ADDED HERE --- */}
+          <img 
+            src={room.main_image_file ? `http://localhost:8000${room.main_image_file}` : 'https://placeholder.com'} 
+            alt={room.name}
+            className="w-20 h-20 object-cover rounded-lg border border-amber-500/20 flex-shrink-0"
+            onError={(e) => e.target.src = 'https://placeholder.com'}
+          />
+
+          <div className="flex-1">
+            <h3 className="text-white font-semibold">{room.name}</h3>
+            <p className="text-gray-400 text-sm">₱{room.price}/night | 👥 {room.capacity} guests</p>
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              onClick={() => setEditingRoom(room)}
+              className="px-3 py-1 bg-blue-600/50 text-white rounded-lg hover:bg-blue-600 transition"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => handleDeleteRoom(room.id)}
+              className="px-3 py-1 bg-red-600/50 text-white rounded-lg hover:bg-red-600 transition"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
 
           {/* ========== RESERVATIONS TAB ========== */}
           {activeTab === 'reservations' && (
@@ -528,7 +566,7 @@ const AdminDashboard = () => {
       {/* Add Room Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 rounded-2xl p-6 max-w-md w-full border border-amber-500/20">
+          <div className="bg-gray-800 rounded-2xl p-6 max-w-md w-full border border-amber-500/20 max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold text-white mb-4">Add New Room</h2>
             <form onSubmit={handleAddRoom}>
               <div className="space-y-4">
@@ -564,6 +602,46 @@ const AdminDashboard = () => {
                   className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-white"
                   required
                 />
+
+                {/* --- INTEGRATED IMAGE UPLOAD BOX --- */}
+                <div className="space-y-2">
+                  <label className="text-white text-sm font-medium">Room Image</label>
+                  <div 
+                    className="border-2 border-dashed border-gray-600 rounded-xl p-4 text-center hover:border-amber-500 transition cursor-pointer bg-gray-900/50"
+                    onClick={() => document.getElementById('roomImageInput').click()}
+                  >
+                    {newRoom.imagePreview ? (
+                      <div className="relative">
+                        <img src={newRoom.imagePreview} className="w-full h-40 object-cover rounded-lg" alt="Preview" />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition flex items-center justify-center rounded-lg">
+                          <p className="text-white text-xs">Change Photo</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="py-4">
+                        <span className="text-3xl block mb-2">📸</span>
+                        <p className="text-gray-400 text-sm">Click to upload room photo</p>
+                      </div>
+                    )}
+                    <input
+                      id="roomImageInput"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setNewRoom({...newRoom, imageFile: file, imagePreview: reader.result});
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+
                 <label className="flex items-center gap-2 text-white">
                   <input
                     type="checkbox"
@@ -586,10 +664,10 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      {/* Edit Room Modal */}
+            {/* Edit Room Modal */}
       {editingRoom && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 rounded-2xl p-6 max-w-md w-full border border-amber-500/20">
+          <div className="bg-gray-800 rounded-2xl p-6 max-w-md w-full border border-amber-500/20 max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold text-white mb-4">Edit Room</h2>
             <form onSubmit={handleUpdateRoom}>
               <div className="space-y-4">
@@ -625,6 +703,50 @@ const AdminDashboard = () => {
                   className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-white"
                   required
                 />
+
+                {/* --- IMAGE UPLOAD FOR EDIT --- */}
+                <div className="space-y-2">
+                  <label className="text-white text-sm font-medium">Room Image</label>
+                  <div 
+                    className="border-2 border-dashed border-gray-600 rounded-xl p-4 text-center hover:border-amber-500 transition cursor-pointer bg-gray-900/50"
+                    onClick={() => document.getElementById('editImageInput').click()}
+                  >
+                    {editingRoom.imagePreview || editingRoom.main_image_file ? (
+                      <div className="relative">
+                        <img 
+                          src={editingRoom.imagePreview || `http://localhost:8000${editingRoom.main_image_file}`} 
+                          className="w-full h-40 object-cover rounded-lg" 
+                          alt="Preview" 
+                        />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition flex items-center justify-center rounded-lg">
+                          <p className="text-white text-xs">Click to Change Photo</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="py-4">
+                        <span className="text-3xl block mb-2">📸</span>
+                        <p className="text-gray-400 text-sm">Click to upload room photo</p>
+                      </div>
+                    )}
+                    <input
+                      id="editImageInput"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setEditingRoom({...editingRoom, imageFile: file, imagePreview: reader.result});
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+
                 <label className="flex items-center gap-2 text-white">
                   <input
                     type="checkbox"

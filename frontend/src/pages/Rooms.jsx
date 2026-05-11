@@ -291,11 +291,19 @@ const Rooms = () => {
               >
                 {/* Room Image */}
                 <div className="relative h-56 overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-t from-blue-900 via-transparent to-transparent z-10"></div>
-                  <div 
-                    className="w-full h-full bg-cover bg-center group-hover:scale-110 transition duration-500"
-                    style={{ backgroundImage: `url(${room.main_image || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=400&fit=crop'})` }}
-                  ></div>
+  <div className="absolute inset-0 bg-gradient-to-t from-blue-900 via-transparent to-transparent z-10"></div>
+  <div 
+    className="w-full h-full bg-cover bg-center group-hover:scale-110 transition duration-500"
+    style={{ 
+      backgroundImage: `url(${
+        room.main_image_file 
+          ? (room.main_image_file.startsWith('http') 
+              ? room.main_image_file 
+              : `http://localhost:8000${room.main_image_file}`)
+          : (room.main_image || 'https://placeholder.com')
+      })` 
+    }}
+  ></div>
                   
                   {/* Room Type Badge */}
                   <div className={`absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-semibold z-20 ${roomTypeColors[room.room_type] || 'bg-cyan-600/20 text-cyan-400'}`}>

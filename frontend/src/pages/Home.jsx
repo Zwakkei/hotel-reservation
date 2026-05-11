@@ -286,10 +286,20 @@ const Home = () => {
                   <div className="bg-blue-900/40 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300 group border border-amber-500/20">
                     <div className="relative h-64 overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-t from-blue-900 via-transparent to-transparent z-10"></div>
+                      
+                      {/* --- UPDATED IMAGE LOGIC START --- */}
                       <div 
                         className="w-full h-full bg-cover bg-center group-hover:scale-110 transition duration-500"
-                        style={{ backgroundImage: `url(${room.main_image || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=400&fit=crop'})` }}
+                        style={{ 
+                          backgroundImage: `url(${
+                            room.main_image_file 
+                              ? `http://localhost:8000${room.main_image_file}` 
+                              : (room.main_image || 'https://placeholder.com')
+                          })` 
+                        }}
                       ></div>
+                      {/* --- UPDATED IMAGE LOGIC END --- */}
+
                       <div className="absolute top-4 right-4 bg-gradient-to-r from-amber-600 to-amber-700 px-3 py-1 rounded-full text-sm font-bold text-white z-20 shadow-lg">
                         ₱{room.price}/night
                       </div>
@@ -318,12 +328,6 @@ const Home = () => {
               ))}
             </div>
           )}
-
-          <div className="text-center mt-12">
-            <Link to="/rooms" className="inline-flex items-center gap-2 text-amber-400 font-semibold hover:gap-3 transition-all">
-              View All Rooms →
-            </Link>
-          </div>
         </div>
       </section>
 

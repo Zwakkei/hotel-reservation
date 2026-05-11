@@ -28,11 +28,14 @@ const ModernRoomCard = ({ room, index, filters }) => {
         <motion.img
           animate={{ scale: isHovered ? 1.1 : 1 }}
           transition={{ duration: 0.4 }}
-          src={`https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=400&fit=crop&random=${room.id}`}
+          /* UPDATED SOURCE: Prioritizes your uploaded file, then falls back to URL, then a placeholder */
+          src={room.main_image_file 
+            ? `http://localhost:8000${room.main_image_file}` 
+            : (room.main_image || 'https://placeholder.com')}
           alt={room.name}
           className="w-full h-full object-cover"
+          onError={(e) => { e.target.src = 'https://placeholder.com'; }}
         />
-        
         {/* Overlay Gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
         
