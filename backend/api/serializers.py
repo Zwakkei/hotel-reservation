@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Room, Reservation, ResortAmenity  # ← ADD ResortAmenity import
-
+from .models import Room, Reservation, ResortAmenity
 
 # 🔐 REGISTER SERIALIZER
 class RegisterSerializer(serializers.ModelSerializer):
@@ -42,10 +41,11 @@ class UserSerializer(serializers.ModelSerializer):
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
+        # Use __all__ to automatically include the new main_image_file
         fields = '__all__'
 
 
-# 📦 RESERVATION SERIALIZER (FULLY FIXED WITH DOUBLE-BOOKING PROTECTION)
+# 📦 RESERVATION SERIALIZER
 class ReservationSerializer(serializers.ModelSerializer):
     room = RoomSerializer(read_only=True)
     room_id = serializers.PrimaryKeyRelatedField(
@@ -72,15 +72,11 @@ class ReservationSerializer(serializers.ModelSerializer):
         read_only_fields = ['user', 'created_at', 'total_price']
 
     def create(self, validated_data):
-        # Get the request from context
         request = self.context.get('request')
-        
-        # Calculate number of nights
         nights = (validated_data['check_out'] - validated_data['check_in']).days
         if nights <= 0:
             raise serializers.ValidationError({"check_out": "Check-out must be after check-in"})
         
-        # 🔴 CHECK FOR DOUBLE BOOKING
         overlapping = Reservation.objects.filter(
             room=validated_data['room'],
             status__in=['pending', 'confirmed'],
@@ -89,13 +85,11 @@ class ReservationSerializer(serializers.ModelSerializer):
         ).exists()
         
         if overlapping:
-            raise serializers.ValidationError({"error": "❌ Room is already booked for these dates. Please select different dates."})
+            raise serializers.ValidationError({"error": "❌ Room is already booked for these dates."})
         
-        # Get the room and calculate total price
         room = validated_data['room']
         total_price = room.price * nights
         
-        # Create the reservation
         reservation = Reservation.objects.create(
             user=request.user,
             room=room,
@@ -106,15 +100,12 @@ class ReservationSerializer(serializers.ModelSerializer):
             total_price=total_price,
             status='pending'
         )
-        
         return reservation
 
     def update(self, instance, validated_data):
-        # Update fields
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         
-        # Recalculate total price if dates changed
         if 'check_in' in validated_data or 'check_out' in validated_data:
             nights = (instance.check_out - instance.check_in).days
             instance.total_price = instance.room.price * nights
@@ -123,7 +114,7 @@ class ReservationSerializer(serializers.ModelSerializer):
         return instance
 
 
-# 🏝️ RESORT AMENITY SERIALIZER (MOVED OUTSIDE - CORRECT INDENTATION)
+# 🏝️ RESORT AMENITY SERIALIZER
 class ResortAmenitySerializer(serializers.ModelSerializer):
     class Meta:
         model = ResortAmenity

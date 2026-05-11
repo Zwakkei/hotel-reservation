@@ -6,6 +6,10 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, permission_classes
 
+# ✅ NEW IMPORTS FOR IMAGES
+from django.conf import settings
+from django.conf.urls.static import static
+
 # API Documentation View
 class APIDocumentationView(APIView):
     permission_classes = [AllowAny]
@@ -57,10 +61,14 @@ urlpatterns = [
     # Admin panel
     path('admin/', admin.site.urls),
     
-    # API endpoints - THIS IS THE IMPORTANT ONE
+    # API endpoints
     path('api/', include('api.urls')),
     
     # Health check
     path('health/', health_check, name='health-check'),
 ]
 
+# ✅ ADD THIS AT THE VERY BOTTOM
+# This tells Django to serve files from your "media" folder during development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

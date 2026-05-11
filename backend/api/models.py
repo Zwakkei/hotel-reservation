@@ -30,6 +30,10 @@ class Room(models.Model):
     view_type = models.CharField(max_length=20, choices=VIEW_TYPES, default='city')
     
     # Images
+    # NEW FIELD ADDED HERE:
+    main_image_file = models.ImageField(upload_to='rooms/', null=True, blank=True)
+    
+    # Existing URL fields
     main_image = models.URLField(max_length=500, blank=True)
     image2 = models.URLField(max_length=500, blank=True)
     image3 = models.URLField(max_length=500, blank=True)

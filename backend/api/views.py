@@ -11,7 +11,10 @@ from datetime import datetime, timedelta
 from django.db.models import Count
 from django.utils import timezone
 
-# ✅ IMPORT
+# ✅ IMPORT PARSERS FOR IMAGE UPLOADS
+from rest_framework.parsers import MultiPartParser, FormParser
+
+# ✅ IMPORT UTILS
 from .utils import send_booking_confirmation
 
 
@@ -75,17 +78,21 @@ class MeView(APIView):
         return Response(serializer.data)
 
 
-# Room Views
+# 🏨 ROOM VIEWS - UPDATED TO HANDLE IMAGE UPLOADS
 class RoomListCreateView(generics.ListCreateAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
     permission_classes = [permissions.AllowAny]
+    # Required to process Image files from Frontend
+    parser_classes = (MultiPartParser, FormParser)
 
 
 class RoomDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
     permission_classes = [permissions.AllowAny]
+    # Required to process Image files during updates
+    parser_classes = (MultiPartParser, FormParser)
 
 
 # Available Rooms View
@@ -301,7 +308,7 @@ class AdminStatsView(APIView):
         })
 
 
-# 🏝️ RESORT AMENITIES VIEW - MOVED OUTSIDE (CORRECT INDENTATION)
+# 🏝️ RESORT AMENITIES VIEW
 class ResortAmenityListView(generics.ListAPIView):
     queryset = ResortAmenity.objects.filter(is_active=True)
     serializer_class = ResortAmenitySerializer

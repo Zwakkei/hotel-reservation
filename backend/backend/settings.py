@@ -1,6 +1,6 @@
 from pathlib import Path
 from datetime import timedelta
-
+import os  # Added for path handling
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -90,6 +90,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
 
+# --- MEDIA FILES CONFIGURATION ---
+# These settings handle the actual files uploaded by the Admin Dashboard
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -123,6 +128,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'your-email@gmail.com'  # Replace with your email
-EMAIL_HOST_PASSWORD = 'your-app-password'  # Get from Google Account
-DEFAULT_FROM_EMAIL = 'HotelReservation <your-email@gmail.com>'
+EMAIL_HOST_USER = 'kacyzayn@gmail.com'  # Replace with your email
+EMAIL_HOST_PASSWORD = 'lsrf apzi xtfi bgvf'  # Get from Google Account
+DEFAULT_FROM_EMAIL = 'BlueHaven Grand Hotel <kacyzayn@gmail.com>'
