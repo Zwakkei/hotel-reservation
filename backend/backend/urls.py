@@ -72,3 +72,12 @@ urlpatterns = [
 # This tells Django to serve files from your "media" folder during development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# TEMPORARY: Add this to the bottom of backend/backend/urls.py
+from django.contrib.auth.models import User
+try:
+    if not User.objects.filter(username='admin').exists():
+        User.objects.create_superuser('admin', 'admin@example.com', 'AdminPassword123')
+        print("✅ SUCCESS: Admin 'admin' created with password 'AdminPassword123'")
+except Exception as e:
+    print(f"❌ Admin creation error: {e}")
